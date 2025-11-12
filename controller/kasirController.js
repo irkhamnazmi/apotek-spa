@@ -6,5 +6,6 @@ $(document).ready(function() {
     });
   }
 
-  console.log("KasirController aktif ✅");
 });
+
+  console.log("KasirController aktif ✅");

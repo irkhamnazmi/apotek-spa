@@ -10650,7 +10650,7 @@ a:focus {
 }
 
 .sidebar-light .nav-item .nav-link:active i, .sidebar-light .nav-item .nav-link:focus i, .sidebar-light .nav-item .nav-link:hover i {
-  color: #6e707e;
+  color: #fff;
 }
 
 .sidebar-light .nav-item .nav-link[data-toggle="collapse"]::after {
@@ -10665,12 +10665,13 @@ a:focus {
   color: #6e707e;
 }
 
+
 .sidebar-light #sidebarToggle {
   background-color: #eaecf4;
 }
 
 .sidebar-light #sidebarToggle::after {
-  color: #b7b9cc;
+  color: #fff;
 }
 
 .sidebar-light #sidebarToggle:hover {
@@ -10975,6 +10976,12 @@ form.user .btn-user {
   line-height: 1;
   width: 12.5rem;
 }
+
+/* Edit */
+
+/* Untuk nav-link utama aktif */
+
+
 
 @-webkit-keyframes noise-anim {
   0% {
