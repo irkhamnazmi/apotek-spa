@@ -19,21 +19,33 @@ document.addEventListener("alpine:init", () => {
     },
 
     // --- ROUTING ---
-    bindRouting() {
-      $(document).on("click", "a[data-page]", (e) => {
-        e.preventDefault();
-        const $link = $(e.currentTarget); // ✅ wajib
-        const page = $link.data("page");
+  bindRouting() {
+  // Hapus dulu binding lama biar tidak dobel
+  $(document).off("click.spa");
 
-        this.navigateTo(page);
+  // Klik link navigasi (semua)
+  $(document).on("click.spa", "a[data-page]", (e) => {
+    e.preventDefault();
 
-        // Tutup collapse jika klik submenu
-        if ($link.hasClass("collapse-item")) {
-          const parentCollapse = $link.closest(".collapse");
-          setTimeout(() => parentCollapse.collapse("hide"), 200);
-        }
-      });
-    },
+    const $link = $(e.currentTarget);
+    const page = $link.data("page");
+    this.navigateTo(page);
+
+    // Tutup semua collapse ketika submenu diklik
+    if ($link.hasClass("collapse-item")) {
+      const $parentCollapse = $link.closest(".collapse");
+
+      // Tutup collapse setelah klik submenu
+      setTimeout(() => {
+        $parentCollapse.collapse("hide");
+      }, 150);
+
+      // Hapus fokus dari link (biar animasi rapi)
+      $link.blur();
+    }
+  });
+}
+,
 
     navigateTo(page) {
       history.pushState({}, "", page);
@@ -84,7 +96,7 @@ loadController(path) {
   $("script[data-controller]").remove();
 
   // Pastikan path relatif ke root (bukan "./")
-  const finalPath = `/controllers/${path.split('/').pop()}`; // misal: /controllers/kasirController.js
+  const finalPath = `./controllers/${path.split('/').pop()}`; // misal: /controllers/kasirController.js
   console.log("📦 [Alpine] Memuat controller:", finalPath);
 
   fetch(`${finalPath}?v=${Date.now()}`)
@@ -115,28 +127,38 @@ loadController(path) {
 
 
     // --- SET ACTIVE MENU ---
-    setActiveMainMenu() {
-      const path = window.location.pathname.split("/").pop() || "dashboard";
-      console.log("🧭 Menandai menu aktif:", path);
+  setActiveMainMenu() {
+  const path = window.location.pathname.split("/").pop() || "dashboard";
+  console.log("🧭 Menandai menu aktif:", path);
 
-      $(".nav-item").removeClass("active");
-      $(".collapse").collapse("hide");
+  // Hapus semua class active
+  $(".nav-item").removeClass("active");
 
-      // Submenu (collapse-item)
-      const activeSubmenu = $(
-        `.collapse-item[href='${path}'], .collapse-item[data-page='${path}']`
-      );
+  // Cari submenu aktif
+  const activeSubmenu = $(`.collapse-item[href='${path}'], .collapse-item[data-page='${path}']`);
 
-      if (activeSubmenu.length) {
-        const parentCollapse = activeSubmenu.closest(".collapse");
-        const mainItem = parentCollapse.closest(".nav-item");
-        parentCollapse.addClass("show");
-        mainItem.addClass("active"); // warna di nav-link utama
-      } else {
-        // Nav utama (dashboard)
-        $(`.nav-link[data-page='${path}']`).closest(".nav-item").addClass("active");
-      }
-    },
+  if (activeSubmenu.length) {
+    const parentCollapse = activeSubmenu.closest(".collapse");
+    const mainItemLi = parentCollapse.closest(".nav-item");
+
+    // Tandai nav-item utama sebagai active
+    mainItemLi.addClass("active");
+
+    // Buka collapse yang berisi submenu aktif
+    parentCollapse.collapse("show");
+
+    // Tutup semua collapse lain yang tidak berisi submenu aktif
+    $(".collapse").not(parentCollapse).collapse("hide");
+  } else {
+    // Halaman utama tanpa submenu
+    $(`.nav-item > .nav-link[data-page='${path}']`).closest(".nav-item").addClass("active");
+
+    // Tutup semua collapse
+    $(".collapse").collapse("hide");
+  }
+}
+
+,
 
     // --- OPTIONAL NOTIFY ---
     notify(message, type = "success") {
