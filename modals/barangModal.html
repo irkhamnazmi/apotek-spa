@@ -1,0 +1,217 @@
+<div class="modal fade" id="modalBarang" tabindex="-1">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">Tambah Barang</h5>
+        <button class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>SKU</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Kosongkan untuk otomatis"
+                />
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Nama Produk *</label>
+                <input type="text" class="form-control" />
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Kode Produk</label>
+                <input type="text" class="form-control" />
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Nama Pabrik</label>
+                <input type="text" class="form-control" />
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Barcode</label>
+                <input type="text" class="form-control" />
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Periode Pembelian *</label>
+                <div class="input-group">
+                  <input type="text" class="form-control" />
+                  <div class="input-group-append">
+                    <span class="input-group-text">Hari Sekali</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Resep</label>
+                <select class="form-control">
+                  <option>Wajib</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Tipe Produk</label>
+                <select class="form-control">
+                  <option>UMUM</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Jenis Produk</label>
+                <select class="form-control">
+                  <option>Pilih</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Indikasi</label>
+                <select class="form-control">
+                  <option>Pilih</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Gudang</label>
+                <div class="input-group">
+                  <select class="form-control">
+                    <option>Gudang Default</option>
+                  </select>
+                  <div class="input-group-append">
+                    <button class="btn btn-primary">+</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Kategori</label>
+                <div class="input-group">
+                  <select class="form-control">
+                    <option>Kategori Default</option>
+                  </select>
+                  <div class="input-group-append">
+                    <button class="btn btn-primary">+</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Rak</label>
+                <div class="input-group">
+                  <select class="form-control">
+                    <option>Rak Default</option>
+                  </select>
+                  <div class="input-group-append">
+                    <button class="btn btn-primary">+</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Status Penjualan</label>
+                <select class="form-control">
+                  <option>Dijual</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Expired Date</label>
+                <div class="input-group">
+                  <input
+                    type="date"
+                    class="form-control"
+                    placeholder="hh/bb/yyyy"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Tuslah</label>
+                <input type="number" class="form-control" value="0" />
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Peringatan Tanggal Kadaluarsa</label>
+                <div class="input-group">
+                  <input type="text" class="form-control" value="120" />
+                  <div class="input-group-append">
+                    <span class="input-group-text">Hari</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Stok *</label>
+                <input type="number" class="form-control" />
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Stok Minimal *</label>
+                <input type="number" class="form-control" />
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Referensi Harga Beli *</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  placeholder="contoh: 5000"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button class="btn btn-primary" id="btnSimpanBarang">Simpan</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

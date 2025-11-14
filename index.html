@@ -29,15 +29,9 @@
       href="vendor/datatables/dataTables.bootstrap4.min.css"
       rel="stylesheet"
     />
-
-    <!-- ✅ Tambahkan Alpine.js (versi 3, defer agar load belakangan) -->
-    <script
-      src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"
-      defer
-    ></script>
   </head>
 
-  <body id="page-top" x-data="spaApp">
+  <body id="page-top">
     <!-- Page Wrapper -->
     <div id="wrapper">
       <!-- Sidebar -->
@@ -54,7 +48,7 @@
         <!-- End of Topbar -->
 
         <!-- Main Content -->
-        <div id="content" x-html="content"></div>
+        <div id="content"></div>
         <!-- End of Main Content -->
 
         <!-- Footer -->
@@ -117,7 +111,8 @@
     <!-- ✅ Load JS libraries di bawah Alpine agar tidak bentrok -->
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>e
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
     <script src="vendor/datatables/jquery.dataTables.min.js"></script>
     <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
     <script src="js/demo/datatables-demo.js"></script>

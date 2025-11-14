@@ -1,0 +1,100 @@
+<!-- Begin Page Content -->
+<div class="container-fluid">
+  <!-- Page Heading -->
+  <h1 class="h3 mb-2 text-gray-800">Barang</h1>
+  <p class="mb-4">
+    DataTables is a third party plugin that is used to generate the demo table
+    below. For more information about DataTables, please visit the
+    <a target="_blank" href="https://datatables.net"
+      >official DataTables documentation</a
+    >.
+  </p>
+
+  <!-- DataTales Example -->
+  <div class="card shadow mb-4">
+    <div class="card-header py-3">
+      <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+      <button class="btn btn-primary btn-sm" id="btnTambahBarang">
+        Tambah Barang
+      </button>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <div class="row mb-3">
+          <div class="col-md-3">
+            <label class="small font-weight-bold">Show Entries</label>
+            <select id="customLength" class="form-control">
+              <option value="10">10</option>
+              <option value="25">25</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+            </select>
+          </div>
+
+          <div class="col-md-5"></div>
+
+          <div class="col-md-4">
+            <label class="small font-weight-bold">Cari Barang</label>
+            <input
+              type="text"
+              id="customSearch"
+              class="form-control"
+              placeholder="Cari barang..."
+            />
+          </div>
+        </div>
+        <table
+          class="table table-bordered"
+          id="dataTable"
+          width="100%"
+          cellspacing="0"
+        >
+          <thead>
+            <tr>
+              <th>Nama Barang</th>
+              <th>SKU</th>
+              <th>Stok</th>
+              <th>Rak</th>
+              <th>Harga Beli</th>
+              <th>Tuslah</th>
+              <th>Harga Jual</th>
+              <th>Tanggal Kadaluarsa</th>
+              <th>Status</th>
+
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Oskadon Tablet 4s</td>
+              <td>OSK-T4</td>
+              <td>120</td>
+              <td>A1-03</td>
+              <td>1.200</td>
+              <td>200</td>
+              <td>2.000</td>
+              <td>2026-09-12</td>
+              <td>Aktif</td>
+              <td><button class="btn btn-sm btn-danger">Hapus</button></td>
+            </tr>
+            <tr>
+              <td>Amoxicillin 500 mg Kaplet</td>
+              <td>AMX-500-K</td>
+              <td>75</td>
+              <td>B2-11</td>
+              <td>4.500</td>
+              <td>500</td>
+              <td>6.000</td>
+              <td>2027-03-05</td>
+              <td>Aktif</td>
+              <td><button class="btn btn-sm btn-danger">Hapus</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="modalContainer"></div>
+<div id="modalProgressContainer"></div>
