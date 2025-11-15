@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Struk Pembayaran Dana</title>
+    <script src="../vendor/jquery/jquery.min.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Courier New", monospace;
+      }
+
+      body {
+        background-color: #f0f0f0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .receipt {
+        width: 300px;
+        background: white;
+        padding: 15px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border-radius: 5px;
+      }
+
+      .receipt-header {
+        text-align: center;
+        border-bottom: 1px dashed #333;
+        padding-bottom: 10px;
+        margin-bottom: 10px;
+      }
+
+      .receipt-title {
+        font-weight: bold;
+        font-size: 16px;
+        margin-bottom: 5px;
+      }
+
+      .receipt-date {
+        font-size: 12px;
+      }
+
+      .receipt-content {
+        font-size: 12px;
+        line-height: 1.4;
+      }
+
+      .receipt-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 5px;
+      }
+
+      .label {
+        font-weight: bold;
+      }
+
+      .divider {
+        border-bottom: 1px dashed #333;
+        margin: 10px 0;
+      }
+
+      .divider-thick {
+        border-bottom: 2px solid #333;
+        margin: 10px 0;
+      }
+
+      .text-center {
+        text-align: center;
+      }
+
+      .text-right {
+        text-align: right;
+      }
+
+      .amount-section {
+        margin: 10px 0;
+      }
+
+      .total {
+        font-weight: bold;
+        font-size: 14px;
+      }
+
+      .footer {
+        margin-top: 15px;
+        font-size: 10px;
+        text-align: center;
+      }
+
+      .barcode {
+        text-align: center;
+        margin: 10px 0;
+        font-family: "Libre Barcode 128", cursive;
+        font-size: 24px;
+      }
+
+      .button-container {
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+      }
+
+      button {
+        padding: 8px 15px;
+        border: 1px solid #333;
+        background: white;
+        border-radius: 3px;
+        cursor: pointer;
+        font-size: 12px;
+      }
+
+      button:hover {
+        background: #f0f0f0;
+      }
+
+      @media print {
+        body {
+          background: white;
+        }
+
+        .receipt {
+          box-shadow: none;
+        }
+
+        .button-container {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="receipt">
+      <div class="receipt-header">
+        <div class="receipt-title">RAYA JATISANIT (1939)</div>
+        <div class="receipt-date">24-10-2025 14:28:30 WIB</div>
+        <div>TOPUP DANA (BI SIMP)</div>
+      </div>
+
+      <div class="receipt-content">
+        <div class="receipt-row">
+          <div class="label">TGL TRANS</div>
+          <div>24-10-2025 14:28:30</div>
+        </div>
+
+        <div class="receipt-row">
+          <div class="label">ID TRANSAKSI</div>
+          <div>D343216446</div>
+        </div>
+
+        <div class="receipt-row">
+          <div class="label">NO HANDPHONE</div>
+          <div>085786625255</div>
+        </div>
+
+        <div class="receipt-row">
+          <div class="label">NAMA KONSUMEN</div>
+          <div>DNID IRKXXX NAZXX NOV XXX</div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="receipt-row">
+          <div class="label">NO REFERENSI</div>
+        </div>
+        <div class="text-center">202510241012148103010</div>
+        <div class="text-center">0166662517249694</div>
+
+        <div class="divider"></div>
+
+        <div class="amount-section">
+          <div class="receipt-row">
+            <div>NOMINAL</div>
+            <div>Rp.200.000,-</div>
+          </div>
+
+          <div class="receipt-row">
+            <div>BIAYA ADMIN</div>
+            <div>Rp.0,-</div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="receipt-row total">
+            <div>TOTAL PEMBAYARAN</div>
+            <div>Rp.200.000,-</div>
+          </div>
+        </div>
+
+        <div class="divider-thick"></div>
+
+        <div class="text-center" style="margin-bottom: 10px">
+          <div class="label">- DETAIL BAYAR -</div>
+        </div>
+
+        <div class="receipt-row">
+          <div>TOTAL TAGIHAN</div>
+          <div>Rp.200.000,-</div>
+        </div>
+
+        <div class="receipt-row">
+          <div>TOTAL DISKON</div>
+          <div>Rp.0,-</div>
+        </div>
+
+        <div class="receipt-row">
+          <div>SETELAH DISKON</div>
+          <div>Rp.200.000,-</div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="receipt-row">
+          <div>TUNAI</div>
+          <div>Rp.200.000,-</div>
+        </div>
+
+        <div class="receipt-row">
+          <div>NON TUNAI/KARTU</div>
+          <div>Rp.0,-</div>
+        </div>
+
+        <div class="receipt-row">
+          <div>VOUCHER</div>
+          <div>Rp.0,-</div>
+        </div>
+
+        <div class="divider-thick"></div>
+
+        <div class="barcode">|||| ||| ||||| |||| ||||</div>
+
+        <div class="footer">
+          <div>Terima kasih atas kunjungan Anda</div>
+          <div>Struk ini sebagai bukti pembayaran yang sah</div>
+        </div>
+      </div>
+
+      <div class="button-container">
+        <button id="print-btn">Cetak Struk</button>
+        <button id="close-btn">Tutup</button>
+      </div>
+    </div>
+
+    <script>
+      $(document).ready(function () {
+        // Cetak struk
+        $("#print-btn").click(function () {
+          window.print();
+        });
+
+        // Tutup halaman (hanya bekerja jika dibuka di window baru)
+        $("#close-btn").click(function () {
+          window.close();
+        });
+
+        // Tambahkan efek ketikan
+        $(".receipt-content").hide().fadeIn(1000);
+      });
+    </script>
+  </body>
+</html>
