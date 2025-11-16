@@ -10979,7 +10979,12 @@ form.user .btn-user {
 
 /* Edit */
 
-/* Untuk nav-link utama aktif */
+.dataTables_filter {
+  display: none;
+}
+
+
+
 
 
 
@@ -11286,3 +11291,7 @@ footer.sticky-footer .copyright {
 body.sidebar-toggled footer.sticky-footer {
   width: 100%;
 }
+
+
+
+/* ... END of SB ADMIN default styles ... = */

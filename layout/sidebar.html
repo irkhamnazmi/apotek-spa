@@ -1,13 +1,28 @@
 <!-- Sidebar - Brand -->
 <a
-  class="sidebar-brand d-flex align-items-center justify-content-center"
+  class="sidebar-brand d-flex align-items-center justify-content-start"
   href=""
 >
-  <div class="sidebar-brand-icon rotate-n-15">
-    <i class="fas fa-laugh-wink"></i>
+  <div class="sidebar-brand-icon">
+    <!-- Logo besar → tampil saat layar besar (lg+) -->
+
+    <img
+      src="img/logo.png"
+      class="logo-lg d-none d-lg-block"
+      alt="Logo"
+      height="120"
+    />
+
+    <!-- Logo kecil → tampil saat layar kecil (sm/md) -->
+    <!-- Logo kecil (SM/MD + saat sidebar minimize) -->
+    <img
+      src="img/logo_lite.png"
+      class="logo-sm d-block d-lg-none"
+      alt="Logo"
+      height="50"
+    />
   </div>
   <div class="sidebar-brand-text mx-3">
-    Apotek
     <!-- <sup>2</sup> -->
   </div>
 </a>
@@ -50,21 +65,12 @@
     <div class="bg-white py-2 collapse-inner rounded">
       <h6 class="collapse-header">Penjualan:</h6>
       <a class="collapse-item" href="kasir" data-page="kasir">Kasir</a>
-      <a class="collapse-item" href="kasir" data-page="kasir"
-        >Daftar Penjualan</a
-      >
-      <a class="collapse-item" href="kasir" data-page="kasir"
-        >Rektur Penjualan</a
-      >
-      <a class="collapse-item" href="kasir" data-page="kasir"
-        >Faktur Penjualan</a
-      >
     </div>
   </div>
 </li>
 
 <!-- Nav Item - Utilities Collapse Menu -->
-<li class="nav-item">
+<!-- <li class="nav-item">
   <a
     class="nav-link collapsed"
     href="#pembelian"
@@ -89,10 +95,9 @@
       <a class="collapse-item" href="utilities-animation.html"
         >Retur Pembelian</a
       >
-      <!-- <a class="collapse-item" href="utilities-other.html">Other</a> -->
     </div>
   </div>
-</li>
+</li> -->
 
 <li class="nav-item">
   <a
@@ -115,10 +120,7 @@
     <div class="bg-white py-2 collapse-inner rounded">
       <h6 class="collapse-header">Persediaan:</h6>
       <a class="collapse-item" href="utilities-color.html">Stok Opname</a>
-      <a class="collapse-item" href="utilities-border.html"
-        >Riwayat Stok Opname</a
-      >
-      <a class="collapse-item" href="utilities-animation.html">Defecta</a>
+
       <!-- <a class="collapse-item" href="utilities-other.html">Other</a> -->
     </div>
   </div>
@@ -147,11 +149,13 @@
       <a class="collapse-item" href="barang" data-page="barang"
         >Master Barang</a
       >
-      <a class="collapse-item" href="utilities-border.html">Master Kategori</a>
-      <a class="collapse-item" href="utilities-animation.html"
+      <a
+        class="collapse-item"
+        href="jenis_pembayaran"
+        data-page="jenis_pembayaran"
         >Jenis Pembayaran</a
       >
-      <a class="collapse-item" href="utilities-animation.html">Pengguna</a>
+      <a class="collapse-item" href="pengguna" data-page="pengguna">Pengguna</a>
 
       <!-- <a class="collapse-item" href="utilities-other.html">Other</a> -->
     </div>

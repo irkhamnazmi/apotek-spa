@@ -1,0 +1,8 @@
+.sidebar.toggled .sidebar-brand-icon .logo-sm {
+    display: block !important;
+}
+
+.sidebar.toggled .sidebar-brand-icon .logo-lg {
+    display: none !important;
+}
+
