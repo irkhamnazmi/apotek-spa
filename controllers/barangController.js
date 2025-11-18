@@ -1,6 +1,6 @@
 $(document).ready(function () {
 
-  const host = `http://localhost:8081/apotek-spa`; // Base URL API
+  const host = `http://localhost:8081/palmirafit`; // Base URL API
 
   // Load modal sekali
   if (!window._modalBarangLoaded) {
@@ -16,6 +16,7 @@ $(document).ready(function () {
         console.log("⏳ Progress modal loaded");
       });
       bindModalEvents();
+      loadSatuan();
     });
   } else {
     bindModalEvents();
@@ -38,23 +39,31 @@ $(document).ready(function () {
       }
     },
     columns: [
+    
       { data: "kode_barang" },
       { data: "nama_barang" },
       { data: "stok_barang" },
       { data: "stok_minimum" },
       { data: "harga_beli" },
       { data: "harga_jual" },
-      { data: "tanggal_kadaluarsa" },
+      { data: "tgl_kadaluarsa" },
       {
         data: null,
         orderable: false,
         render: function (data, type, row) {
           return `
             <button class="btn btn-sm btn-primary btnEditBarang" 
-                    data-id="${row.id_barang}" 
-                    data-nama="${row.nama_barang}" 
-                    data-stok="${row.stok_barang}" 
-                    data-kode="${row.kode_barang}">Edit</button>
+                    data-id-barang="${row.id_barang}" 
+                    data-nama-barang="${row.nama_barang}" 
+                    data-stok-barang="${row.stok_barang}"
+                    data-stok-minimum="${row.stok_minimum}"
+
+
+                    data-harga-beli="${row.harga_beli}"
+                    data-harga-jual="${row.harga_jual}"
+
+
+                    >Edit</button>
             <button class="btn btn-sm btn-danger btnHapus" 
                     data-id="${row.id_barang}">Hapus</button>`;
         }
@@ -80,26 +89,40 @@ $(document).ready(function () {
     $(document).off("click", ".btnEditBarang");
     $(document).off("click", "#btnSimpanBarang");
 
+
+
     // Tambah Barang
     $(document).on("click", "#btnTambahBarang", function () {
       resetForm();
       $("#modalBarang .modal-title").text("Tambah Barang");
       $("#modalBarang").modal("show");
+     
     });
 
     // Edit Barang
     $(document).on("click", ".btnEditBarang", function () {
-      const id = $(this).data("id");
-      const nama = $(this).data("nama");
-      const stok = $(this).data("stok");
-      const kode = $(this).data("kode");
+      const idBarang = $(this).data("idBarang");
+      const namaBarang = $(this).data("namaBarang");
+      const stokBarang = $(this).data("stokBarang");
+      const stokMinimum = $(this).data("stokMinimum");
+      const idSatuan = $(this).data("idSatuan");
+      const hargaBeli = $(this).data("hargaBeli");
+      const hargaJual = $(this).data("hargaJual");
+      const tglKadaluarsa = $(this).data("tglKadaluarsa");
 
-      $("#namaBarang").val(nama);
-      $("#stokBarang").val(stok);
-      $("#kodeBarang").val(kode);
 
-      $("#modalBarang .modal-title").text(`Edit Barang (ID: ${id})`);
-      $("#btnSimpanBarang").data("id", id);
+
+
+      $("#namaBarang").val(namaBarang);
+      $("#stokBarang").val(stokBarang);
+      $("#stokMinimum").val(stokMinimum);
+      $("#idSatuan").val(idSatuan);
+      $("#hargaBeli").val(hargaBeli);
+      $("#hargaJual").val(hargaJual);
+      $("#tglKadaluarsa").val(tglKadaluarsa);
+
+      $("#modalBarang .modal-title").text(`Edit Barang`);
+      $("#btnSimpanBarang").data("idBarang", idBarang);
       $("#modalBarang").modal("show");
     });
 
@@ -107,9 +130,16 @@ $(document).ready(function () {
     $(document).on("click", "#btnSimpanBarang", function () {
       const id = $(this).data("id");
       const data = {
-        kode_barang: $("#kodeBarang").val(),
-        nama_barang: $("#namaBarang").val(),
-        stok_barang: $("#stokBarang").val()
+      namaBarang:   $("#namaBarang").val(),
+      stokBarang: $("#stokBarang").val(),
+      stokMinimum: $("#stokMinimum").val(),
+      idSatuan: $("#idSatuan").val(),
+      hargaBeli: $("#hargaBeli").val(),
+      hargaJual:$("#hargaJual").val(),
+      tglKadaluarsa:$("#tglKadaluarsa").val()
+       
+
+
       };
 
       startProgress().then(() => {
@@ -156,7 +186,12 @@ $(document).ready(function () {
     $("#kodeBarang").val("");
     $("#namaBarang").val("");
     $("#stokBarang").val("");
-    $("#btnSimpanBarang").removeData("id");
+    $("#stokMinimum").val("");
+    $("#idSatuan").val("");
+    $("#hargaBeli").val("");
+    $("#hargaJual").val("");
+    $("#tglKadaluarsa").val("");
+    $("#btnSimpanBarang").removeData("idBarang");
   }
 
   function startProgress() {
@@ -183,5 +218,30 @@ $(document).ready(function () {
     $("#progressBar").css("width", value + "%");
     $("#progressText").text(value + "%");
   }
+
+  function loadSatuan() {
+  $.ajax({
+    url: `${host}/api/satuan`,
+    type: "GET",
+    success: function (res) {
+      const list = res.data || [];
+      const dropdown = $("#idSatuan");
+
+      dropdown.empty();
+      dropdown.append(`<option value="">-- Pilih Satuan --</option>`);
+
+      list.forEach(item => {
+        dropdown.append(`
+          <option value="${item.id_satuan}">
+            ${item.nama_satuan}
+          </option>
+        `);
+      });
+    },
+    error: function () {
+      console.error("❌ Gagal load data satuan");
+    }
+  });
+}
 
 });

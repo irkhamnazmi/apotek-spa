@@ -38,7 +38,7 @@ class MasterBarang
             $d['harga_jual'],
             $d['stok_minimum'],
             $d['stok_barang'],
-            $d['tanggal_kadaluarsa']
+            $d['tgl_kadaluarsa']
         );
         return $stmt->execute();
     }
