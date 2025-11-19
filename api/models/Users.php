@@ -26,7 +26,7 @@ class Users
 
     public function create($d)
     {
-        $stmt = $this->conn->prepare("INSERT INTO user (username,password,no_hp,email,alamat,role) VALUES (?,?,?,?,?,?)");
+        $stmt = $this->conn->prepare("INSERT INTO user (nip,username,password,no_hp,email,alamat,role) VALUES (?,?,?,?,?,?)");
         $stmt->bind_param("ssisss", $d['username'], $d['password'], $d['no_hp'], $d['email'], $d['alamat'], $d['role']);
         return $stmt->execute();
     }

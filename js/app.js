@@ -62,6 +62,7 @@ $(document).ready(function () {
 
     $("#content").load(pagePath, function (response, status) {
       if (status === "error") {
+        
         $("#content").html(`<div class="alert alert-danger">404 - Halaman tidak ditemukan</div>`);
       } else {
         reinitTemplate();

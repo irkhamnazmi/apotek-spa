@@ -3,11 +3,11 @@ $(document).ready(function () {
   const host = `http://localhost:8081/palmirafit`; // Base URL API
 
   // Load modal sekali
-  if (!window._modalBarangLoaded) {
-    window._modalBarangLoaded = true;
+  if (!window._modalPenggunaLoaded) {
+    window._modalPenggunaLoaded = true;
 
-    $("#modalContainer").load(`${host}/modals/barangModal.html`, function () {
-      if ($("#modalBarang").length === 0) {
+    $("#modalContainer").load(`${host}/modals/penggunaModal.html`, function () {
+      if ($("#modalPengguna").length === 0) {
         console.error("❌ Modal gagal diload");
         return;
       }
@@ -32,7 +32,7 @@ $(document).ready(function () {
     responsive: true,
     dom: 'rtip',
     ajax: {
-      url: `${host}/api/master_barang`,
+      url: `${host}/api/users`,
       dataSrc: (json) => json.data || [],
       error: () => alert("❌ Gagal mengambil data dari server!")
     },
@@ -115,8 +115,8 @@ $(document).ready(function () {
     // Tambah Barang
     $(document).on("click", "#btnTambahBarang", function () {
       resetForm();
-      $("#modalBarang .modal-title").text("Tambah Barang");
-      $("#modalBarang").modal("show");
+      $("#modalPengguna .modal-title").text("Tambah Barang");
+      $("#modalPengguna").modal("show");
     });
 
     // Edit Barang
@@ -142,13 +142,13 @@ $(document).ready(function () {
       $("#hargaJual").val(hargaJual);
       $("#tglKadaluarsa").val(tglKadaluarsa);
 
-      $("#modalBarang .modal-title").text(`Edit Barang ${kodeBarang}`);
+      $("#modalPengguna .modal-title").text(`Edit Barang ${kodeBarang}`);
 
       // Simpan ke button
       $("#btnSimpanBarang").attr("data-idBarang", idBarang);
       $("#btnSimpanBarang").attr("data-kodeBarang", kodeBarang);
 
-      $("#modalBarang").modal("show");
+      $("#modalPengguna").modal("show");
     });
 
     // Simpan (Tambah / Edit)
@@ -175,7 +175,7 @@ $(document).ready(function () {
       startProgress().then(() => {
 
         const method = idBarang ? "PUT" : "POST";
-        const url =`${host}/api/master_barang`;
+        const url =`${host}/api/users`;
 
         $.ajax({
           url: url,
@@ -184,7 +184,7 @@ $(document).ready(function () {
           data: JSON.stringify(data),
           success: function (res) {
             alert(res.meta?.message || "Berhasil disimpan!");
-            $("#modalBarang").modal("hide");
+            $("#modalPengguna").modal("hide");
             table.ajax.reload();
           },
           error: function () {
@@ -203,7 +203,7 @@ $(document).ready(function () {
       if (!confirm("Yakin ingin menghapus barang ini?")) return;
 
       $.ajax({
-        url: `${host}/api/master_barang`,
+        url: `${host}/api/users`,
         type: "DELETE",
         data: { id_barang: id },
         success: function (res) {

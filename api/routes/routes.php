@@ -11,6 +11,7 @@ $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $uri = explode('/', trim($path, '/'));
 $table = end($uri); // ambil elemen terakhir dari URL
 
+
 function parseInput()
 {
     return json_decode(file_get_contents("php://input"), true);
