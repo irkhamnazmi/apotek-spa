@@ -37,51 +37,36 @@ $(document).ready(function () {
       error: () => alert("❌ Gagal mengambil data dari server!")
     },
     columns: [
-    { data: "kode_barang" },
-    { data: "nama_barang" },
-
-    { 
-        data: "stok_barang",
-        render: data => parseInt(data)
-    },
-    { 
-        data: "stok_minimum",
-        render: data => parseInt(data)
-    },
-
-    { 
-        data: "harga_beli",
-        render: function(data){
-            return formatRupiah(data);
-        }
-    },
-    { 
-        data: "harga_jual",
-        render: function(data){
-            return formatRupiah(data);
-        }
-    },
-
-    { data: "tgl_kadaluarsa" },
+    { data: "nik" },
+    { data: "nama_lengkap" },
+        { data: "username" },
+        { data: "no_hp" },
+        { data: "email" },
+        { data: "alamat" },
+        { data: "role" },
+  
     
     {
         data: null,
         orderable: false,
         render: function (data, type, row) {
             return `
-                <button class="btn btn-sm btn-primary btnEditBarang"
-                        data-id-barang="${row.id_barang}"
-                        data-kode-barang="${row.kode_barang}"
-                        data-nama-barang="${row.nama_barang}"
-                        data-stok-barang="${row.stok_barang}"
-                        data-stok-minimum="${row.stok_minimum}"
-                        data-id-satuan="${row.id_satuan}"
-                        data-tgl-kadaluarsa="${row.tgl_kadaluarsa}"
-                        data-harga-beli="${parseInt(row.harga_beli)}"
-                        data-harga-jual="${parseInt(row.harga_jual)}"
+                <button class="btn btn-sm btn-primary btnEdit"
+                        data-id="${row.id_user}"
+                        data-nik="${row.nik}"
+                        data-nama-lengkap="${row.nama_lengkap}"
+                        data-username="${row.username}"
+                        data-password="${row.password}"
+                        data-no-hp="${row.no_hp}"    
+                        data-email="${row.email}"
+                        data-alamat="${row.alamat}"
+                        data-alamat="${row.role}"
+
+
+                       
                 >Edit</button>
 
-                <button class="btn btn-sm btn-danger btnHapus" data-id="${row.id_barang}">
+                <button class="btn btn-sm btn-danger btnHapus" data-id="${row.id_user}">
                     Hapus
                 </button>
             `;
@@ -108,58 +93,57 @@ $(document).ready(function () {
   function bindModalEvents() {
 
     // Clear duplicate events
-    $(document).off("click", "#btnTambahBarang");
-    $(document).off("click", ".btnEditBarang");
-    $(document).off("click", "#btnSimpanBarang");
+    $(document).off("click", "#btnTambah");
+    $(document).off("click", ".btnEdit");
+    $(document).off("click", "#btnSimpan");
 
     // Tambah Barang
-    $(document).on("click", "#btnTambahBarang", function () {
+    $(document).on("click", "#btnTambah", function () {
       resetForm();
-      $("#modalPengguna .modal-title").text("Tambah Barang");
+      $("#modalPengguna .modal-title").text("Tambah Pengguna");
       $("#modalPengguna").modal("show");
     });
 
     // Edit Barang
-    $(document).on("click", ".btnEditBarang", function () {
+    $(document).on("click", ".btnEdit", function () {
 
       // ambil semua data-* dengan dash (-)
-      const idBarang = $(this).data("id-barang");
-      const kodeBarang = $(this).data("kode-barang");
-      const namaBarang = $(this).data("nama-barang");
-      const stokBarang = $(this).data("stok-barang");
-      const stokMinimum = $(this).data("stok-minimum");
-      const idSatuan = $(this).data("id-satuan");
-      const hargaBeli = $(this).data("harga-beli");
-      const hargaJual = $(this).data("harga-jual");
-      const tglKadaluarsa = $(this).data("tgl-kadaluarsa");
+        const id = $(this).data("id");
+        const nik = $(this).data("nik");
+        const namaLengkap = $(this).data("nama-lengkap");
+        const username = $(this).data("username");
+        const password = $(this).data("password");
+        const noHP = $(this).data("no-hp");
+        const email = $(this).data("email");
+        const alamat = $(this).data("alamat");
+        const role = $(this).data("role");
 
-      // Isi form
-      $("#namaBarang").val(namaBarang);
-      $("#stokBarang").val(stokBarang);
-      $("#stokMinimum").val(stokMinimum);
-      $("#idSatuan").val(idSatuan);
-      $("#hargaBeli").val(hargaBeli);
-      $("#hargaJual").val(hargaJual);
-      $("#tglKadaluarsa").val(tglKadaluarsa);
 
-      $("#modalPengguna .modal-title").text(`Edit Barang ${kodeBarang}`);
+        // Isi form
+      $("#namaLengkap").val(namaLengkap);
+        $("#username").val(username);
+        $("#password").val(password);
+        $("#noHp").val(noHP);
+        $("#email").val(email);
+        $("#alamat").val(alamat);
+        $("#role").val(role);
+
+      $("#modalPengguna .modal-title").text(`Edit Pengguna ${nik}`);
 
       // Simpan ke button
-      $("#btnSimpanBarang").attr("data-idBarang", idBarang);
-      $("#btnSimpanBarang").attr("data-kodeBarang", kodeBarang);
+      $("#btnSimpan").attr("data-id", id);
 
       $("#modalPengguna").modal("show");
     });
 
     // Simpan (Tambah / Edit)
-    $(document).on("click", "#btnSimpanBarang", function () {
+    $(document).on("click", "#btnSimpan", function () {
 
-      const idBarang = $(this).attr("data-idBarang") || null;
-      const kodeBarang = $(this).attr("data-kodeBarang") || "";
+      const id = $(this).attr("data-id") || null;
 
       const data = {
-        id_barang: idBarang,
-        kode_barang: kodeBarang,
+        id_user: id,
+        nik: nik,
         nama_barang: $("#namaBarang").val(),
         stok_barang: $("#stokBarang").val(),
         stok_minimum: $("#stokMinimum").val(),
@@ -174,7 +158,7 @@ $(document).ready(function () {
 
       startProgress().then(() => {
 
-        const method = idBarang ? "PUT" : "POST";
+        const method = id ? "PUT" : "POST";
         const url =`${host}/api/users`;
 
         $.ajax({
@@ -205,7 +189,7 @@ $(document).ready(function () {
       $.ajax({
         url: `${host}/api/users`,
         type: "DELETE",
-        data: { id_barang: id },
+        data: { id_pengguna: id },
         success: function (res) {
           alert(res.meta?.message || "Berhasil dihapus!");
           table.ajax.reload();
@@ -220,16 +204,15 @@ $(document).ready(function () {
 
   // Reset form
   function resetForm() {
-    $("#namaBarang").val("");
-    $("#stokBarang").val("");
-    $("#stokMinimum").val("");
-    $("#idSatuan").val("");
-    $("#hargaBeli").val("");
-    $("#hargaJual").val("");
-    $("#tglKadaluarsa").val("");
+     $("#namaLengkap").val("");
+        $("#username").val("");
+        $("#password").val("");
+        $("#noHp").val("");
+        $("#email").val("");
+        $("#alamat").val("");
+        $("#role").val("");
 
-    $("#btnSimpanBarang").removeAttr("data-idBarang");
-    $("#btnSimpanBarang").removeAttr("data-kodeBarang");
+    $("#btnSimpan").removeAttr("data-id");
   }
 
 
