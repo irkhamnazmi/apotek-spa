@@ -71,7 +71,7 @@ class Users
         ");
 
         $stmt->bind_param(
-            "ssssisss",
+            "ssssssss",
             $d['nik'],
             $d['nama_lengkap'],
             $d['username'],
@@ -98,7 +98,7 @@ class Users
         ");
 
         $stmt->bind_param(
-            "ssssisssi",
+            "ssssssssi",
             $d['nik'],
             $d['nama_lengkap'],
             $d['username'],

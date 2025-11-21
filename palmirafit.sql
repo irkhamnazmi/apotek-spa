@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.2
+-- version 5.2.3
 -- https://www.phpmyadmin.net/
 --
 -- Host: mariadb
--- Generation Time: Nov 21, 2025 at 09:16 AM
--- Server version: 10.6.23-MariaDB-ubu2204
--- PHP Version: 8.2.27
+-- Generation Time: Nov 21, 2025 at 11:40 PM
+-- Server version: 10.6.24-MariaDB-ubu2204
+-- PHP Version: 8.3.26
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -178,7 +178,7 @@ INSERT INTO `order` (`id_order`, `id_barang`, `qty`, `jumlah_harga`, `created_at
 
 CREATE TABLE `satuan` (
   `id_satuan` int(11) NOT NULL,
-  `kode_barang` char(10) NOT NULL,
+  `kode_satuan` char(10) NOT NULL,
   `nama_satuan` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -186,7 +186,7 @@ CREATE TABLE `satuan` (
 -- Dumping data for table `satuan`
 --
 
-INSERT INTO `satuan` (`id_satuan`, `kode_barang`, `nama_satuan`) VALUES
+INSERT INTO `satuan` (`id_satuan`, `kode_satuan`, `nama_satuan`) VALUES
 (1, 'S001', 'Pcs'),
 (2, 'S002', 'Botol'),
 (3, 'S003', 'Strip'),
@@ -243,7 +243,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id_user`, `nik`, `nama_lengkap`, `username`, `password`, `no_hp`, `email`, `alamat`, `role`, `created_at`, `updated_at`) VALUES
-(4, '25111', 'Admin', 'admin', 'admin', '0', 'admin@gmail.com', 'Purwodadi ', 'admin', '2025-11-21 06:44:27', '2025-11-21 07:17:46');
+(4, '25111', 'Admin', 'admin', 'admin', '', 'admin@gmail.com', 'Purwodadi ', 'admin', '2025-11-21 06:44:27', '2025-11-21 23:34:28');
 
 --
 -- Indexes for dumped tables

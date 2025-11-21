@@ -1,0 +1,61 @@
+<!-- Begin Page Content -->
+<div class="container-fluid">
+  <!-- Page Heading -->
+  <h1 class="h3 mb-2 text-gray-800">Lokasi Penyimpanan</h1>
+  <p class="mb-4"><a target="_blank" href="https://datatables.net"></a>.</p>
+
+  <!-- DataTales Example -->
+  <div class="card shadow mb-4">
+    <div class="card-header py-3 justify-content-end d-flex flex-fill">
+      <h6 class="m-0 font-weight-bold text-primary"></h6>
+      <button class="btn btn-primary btn-sm" id="btnTambah">
+        Tambah Satuan
+      </button>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <div class="row mb-3">
+          <div class="col-md-3">
+            <label class="small font-weight-bold">Total</label>
+            <select id="customLength" class="form-control">
+              <option value="10">10</option>
+              <option value="25">25</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+            </select>
+          </div>
+
+          <div class="col-md-5"></div>
+
+          <div class="col-md-4">
+            <label class="small font-weight-bold"></label>
+            <input
+              type="text"
+              id="customSearch"
+              class="form-control"
+              placeholder="Cari Pengguna..."
+            />
+          </div>
+        </div>
+        <table
+          class="table table-bordered"
+          id="dataTable"
+          width="100%"
+          cellspacing="0"
+        >
+          <thead>
+            <tr>
+              <th>Kode Jenis Pembayaran</th>
+              <th>Nama Jenis Pembayaran</th>
+              <th>#</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="modalContainer"></div>
+<div id="modalProgressContainer"></div>

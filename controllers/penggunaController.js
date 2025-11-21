@@ -172,11 +172,14 @@ $(document).ready(function () {
         nama_lengkap: $("#namaLengkap").val(),
         username: $("#username").val(),
         password: $("#password").val(),
-        no_hp: $("#noHp").val() === ""? "" : Number($("#noHp").val()),
+        no_hp: $("#noHp").val() === "" ? "" : $("#noHp").val(),
         email: $("#email").val(),
         alamat: $("#alamat").val(),
         role: $("#role").val(),
       };
+
+
+      
 
       
 
