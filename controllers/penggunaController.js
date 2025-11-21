@@ -17,7 +17,7 @@ $(document).ready(function () {
       });
 
       bindModalEvents();
-      loadSatuan();
+     
     });
 
   } else {
@@ -39,11 +39,13 @@ $(document).ready(function () {
     columns: [
     { data: "nik" },
     { data: "nama_lengkap" },
-        { data: "username" },
-        { data: "no_hp" },
-        { data: "email" },
-        { data: "alamat" },
-        { data: "role" },
+    { data: "username" },
+    { data: "no_hp" },
+      { data: "email" },
+      { data: "alamat" },
+    { data: "role" },
+    
+    
   
     
     {
@@ -60,7 +62,7 @@ $(document).ready(function () {
                         data-no-hp="${row.no_hp}"    
                         data-email="${row.email}"
                         data-alamat="${row.alamat}"
-                        data-alamat="${row.role}"
+                        data-role="${row.role}"
 
 
                        
@@ -86,6 +88,22 @@ $(document).ready(function () {
     table.page.len(this.value).draw();
   });
 
+   $(document).on("click", "#togglePassword", function () {
+    const input = $("#password");
+    const icon = $(this).find("i");
+
+    if (input.attr("type") === "password") {
+        input.attr("type", "text");
+        icon.removeClass("fa-eye-slash").addClass("fa-eye");
+    } else {
+        input.attr("type", "password");
+        icon.removeClass("fa-eye").addClass("fa-eye-slash");
+    }
+});
+
+
+  
+
 
   // ===========================
   //   MODAL EVENTS
@@ -97,14 +115,18 @@ $(document).ready(function () {
     $(document).off("click", ".btnEdit");
     $(document).off("click", "#btnSimpan");
 
-    // Tambah Barang
+
     $(document).on("click", "#btnTambah", function () {
       resetForm();
       $("#modalPengguna .modal-title").text("Tambah Pengguna");
       $("#modalPengguna").modal("show");
     });
 
-    // Edit Barang
+
+   
+
+
+    
     $(document).on("click", ".btnEdit", function () {
 
       // ambil semua data-* dengan dash (-)
@@ -113,17 +135,17 @@ $(document).ready(function () {
         const namaLengkap = $(this).data("nama-lengkap");
         const username = $(this).data("username");
         const password = $(this).data("password");
-        const noHP = $(this).data("no-hp");
+        const noHp = $(this).data("no-hp");
         const email = $(this).data("email");
         const alamat = $(this).data("alamat");
         const role = $(this).data("role");
 
 
         // Isi form
-      $("#namaLengkap").val(namaLengkap);
+        $("#namaLengkap").val(namaLengkap);
         $("#username").val(username);
         $("#password").val(password);
-        $("#noHp").val(noHP);
+        $("#noHp").val(noHp);
         $("#email").val(email);
         $("#alamat").val(alamat);
         $("#role").val(role);
@@ -132,6 +154,7 @@ $(document).ready(function () {
 
       // Simpan ke button
       $("#btnSimpan").attr("data-id", id);
+      $("#btnSimpan").attr("data-nik", nik);
 
       $("#modalPengguna").modal("show");
     });
@@ -140,26 +163,30 @@ $(document).ready(function () {
     $(document).on("click", "#btnSimpan", function () {
 
       const id = $(this).attr("data-id") || null;
+      const nik = $(this).attr("data-nik") || "";
+
 
       const data = {
         id_user: id,
         nik: nik,
-        nama_barang: $("#namaBarang").val(),
-        stok_barang: $("#stokBarang").val(),
-        stok_minimum: $("#stokMinimum").val(),
-        id_satuan: $("#idSatuan").val(),
-        harga_beli: $("#hargaBeli").val(),
-        harga_jual: $("#hargaJual").val(),
-        tgl_kadaluarsa: $("#tglKadaluarsa").val()
+        nama_lengkap: $("#namaLengkap").val(),
+        username: $("#username").val(),
+        password: $("#password").val(),
+        no_hp: $("#noHp").val() === ""? "" : Number($("#noHp").val()),
+        email: $("#email").val(),
+        alamat: $("#alamat").val(),
+        role: $("#role").val(),
       };
 
-      console.log(data);
       
 
       startProgress().then(() => {
 
         const method = id ? "PUT" : "POST";
-        const url =`${host}/api/users`;
+        const url = `${host}/api/users`;
+        
+        console.log(data);
+
 
         $.ajax({
           url: url,
@@ -184,20 +211,25 @@ $(document).ready(function () {
     $("#dataTable tbody").on("click", ".btnHapus", function () {
       const id = $(this).data("id");
 
-      if (!confirm("Yakin ingin menghapus barang ini?")) return;
+      if (!confirm("Yakin ingin menghapus pengguna ini?")) return;
 
-      $.ajax({
-        url: `${host}/api/users`,
-        type: "DELETE",
-        data: { id_pengguna: id },
-        success: function (res) {
-          alert(res.meta?.message || "Berhasil dihapus!");
-          table.ajax.reload();
-        },
-        error: function () {
-          alert("❌ Gagal menghapus data!");
-        }
+      startProgress().then(() => { 
+
+
+        $.ajax({
+          url: `${host}/api/users`,
+          type: "DELETE",
+          data: { id_user: id },
+          success: function (res) {
+            alert(res.meta?.message || "Berhasil dihapus!");
+            table.ajax.reload();
+          },
+          error: function () {
+            alert("❌ Gagal menghapus data!");
+          }
+        });
       });
+
     });
 
   }
@@ -213,6 +245,7 @@ $(document).ready(function () {
         $("#role").val("");
 
     $("#btnSimpan").removeAttr("data-id");
+    $("#btnSimpan").removeAttr("data-nik");
   }
 
 
@@ -243,39 +276,6 @@ $(document).ready(function () {
   }
 
   // Load satuan
-  function loadSatuan() {
-    $.ajax({
-      url: `${host}/api/satuan`,
-      type: "GET",
-      success: function (res) {
-        const list = res.data || [];
-        const dropdown = $("#idSatuan");
-
-        dropdown.empty();
-        dropdown.append(`<option value="">-- Pilih Satuan --</option>`);
-
-        list.forEach(item => {
-          dropdown.append(`
-            <option value="${item.id_satuan}">
-              ${item.nama_satuan}
-            </option>
-          `);
-        });
-      },
-      error: function () {
-        console.error("❌ Gagal load data satuan");
-      }
-    });
-  }
-
-  function formatRupiah(angka) {
-    if (!angka) return "Rp 0";
-    return "Rp " + Number(angka)
-        .toLocaleString("id-ID", {
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0
-        });
-}
 
 
 });

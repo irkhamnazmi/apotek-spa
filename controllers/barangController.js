@@ -120,7 +120,7 @@ $(document).ready(function () {
     });
 
     // Edit Barang
-    $(document).on("click", ".btnEditBarang", function () {
+    $(document).on("click", ".btnEdietBarang", function () {
 
       // ambil semua data-* dengan dash (-)
       const idBarang = $(this).data("id-barang");

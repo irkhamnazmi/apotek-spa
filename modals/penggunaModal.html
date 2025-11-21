@@ -31,15 +31,33 @@
 
           <div class="row">
             <div class="col-md-6">
-              <div class="form-group">
-                <label>Password *</label>
-                <input type="text" class="form-control" id="password" />
+              <div class="form-group position-relative">
+                <label>Password</label>
+                <input
+                  type="password"
+                  class="form-control"
+                  id="password"
+                  style="padding-right: 40px"
+                />
+                <span
+                  id="togglePassword"
+                  class="position-absolute"
+                  style="right: 10px; top: 38px; cursor: pointer; color: #888"
+                >
+                  <i class="fa fa-eye-slash"></i
+                ></span>
               </div>
             </div>
             <div class="col-md-6">
               <div class="form-group">
                 <label>No HP*</label>
-                <input type="number" class="form-control" id="noHp" />
+                <input
+                  type="text"
+                  inputmode="numeric"
+                  class="form-control"
+                  id="noHp"
+                  oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                />
               </div>
             </div>
           </div>
@@ -63,7 +81,7 @@
             <div class="col-md-6">
               <div class="form-group">
                 <label>Role</label>
-                <select class="form-control" id="idRole">
+                <select class="form-control" id="role">
                   <option value="admin">Admin</option>
                   <option value="kasir">Kasir</option>
                   <option value="apoteker">Apoteker</option>

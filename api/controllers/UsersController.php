@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . "/../models/User.php";
+require_once __DIR__ . "/../models/Users.php";
 require_once __DIR__ . "/../helpers/Response.php";
 
 class UsersController

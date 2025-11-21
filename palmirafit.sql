@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.3
+-- version 5.2.2
 -- https://www.phpmyadmin.net/
 --
 -- Host: mariadb
--- Generation Time: Nov 16, 2025 at 03:19 AM
--- Server version: 10.6.24-MariaDB-ubu2204
--- PHP Version: 8.3.26
+-- Generation Time: Nov 21, 2025 at 09:16 AM
+-- Server version: 10.6.23-MariaDB-ubu2204
+-- PHP Version: 8.2.27
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -130,7 +130,7 @@ CREATE TABLE `master_barang` (
   `harga_jual` decimal(15,2) DEFAULT NULL,
   `stok_minimum` int(11) DEFAULT NULL,
   `stok_barang` int(11) DEFAULT NULL,
-  `tanggal_kadaluarsa` date DEFAULT NULL,
+  `tgl_kadaluarsa` date DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -139,11 +139,12 @@ CREATE TABLE `master_barang` (
 -- Dumping data for table `master_barang`
 --
 
-INSERT INTO `master_barang` (`id_barang`, `kode_barang`, `nama_barang`, `id_satuan`, `harga_beli`, `harga_jual`, `stok_minimum`, `stok_barang`, `tanggal_kadaluarsa`, `created_at`, `updated_at`) VALUES
+INSERT INTO `master_barang` (`id_barang`, `kode_barang`, `nama_barang`, `id_satuan`, `harga_beli`, `harga_jual`, `stok_minimum`, `stok_barang`, `tgl_kadaluarsa`, `created_at`, `updated_at`) VALUES
 (5, 'OB001', 'Paracetamol 500mg', 3, 1000.00, 1500.00, 50, 200, '2025-12-31', '2025-11-16 00:06:11', '2025-11-16 00:06:11'),
 (6, 'OB002', 'Amoxicillin 500mg', 3, 2000.00, 3000.00, 30, 100, '2024-10-31', '2025-11-16 00:06:11', '2025-11-16 00:06:11'),
 (7, 'OB003', 'Vitamin C 1000mg', 1, 500.00, 800.00, 20, 150, '2026-03-31', '2025-11-16 00:06:11', '2025-11-16 00:06:11'),
-(8, 'OB004', 'Cough Syrup 100ml', 2, 8000.00, 12000.00, 10, 50, '2025-06-30', '2025-11-16 00:06:11', '2025-11-16 00:06:11');
+(8, 'OB004', 'Cough Syrup 100ml', 2, 8000.00, 12000.00, 10, 50, '2025-06-30', '2025-11-16 00:06:11', '2025-11-16 00:06:11'),
+(10, 'OB005', 'Komix', 1, 2000.00, 3000.00, 10, 100, '2025-11-29', '2025-11-19 08:00:44', '2025-11-19 08:00:44');
 
 -- --------------------------------------------------------
 
@@ -225,9 +226,11 @@ INSERT INTO `stok_opname` (`id_stok_opname`, `id_barang`, `id_lokasi_penyimpanan
 
 CREATE TABLE `users` (
   `id_user` int(11) NOT NULL,
+  `nik` char(20) NOT NULL,
+  `nama_lengkap` text NOT NULL,
   `username` text NOT NULL,
   `password` text NOT NULL,
-  `no_hp` bigint(20) DEFAULT NULL,
+  `no_hp` varchar(20) DEFAULT NULL,
   `email` text DEFAULT NULL,
   `alamat` text DEFAULT NULL,
   `role` char(10) DEFAULT NULL,
@@ -239,10 +242,8 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id_user`, `username`, `password`, `no_hp`, `email`, `alamat`, `role`, `created_at`, `updated_at`) VALUES
-(1, 'admin', 'admin123', 81234567890, 'admin@apotek.com', 'Jl. Sehat No.1', 'admin', '2025-11-16 00:06:32', '2025-11-16 00:06:32'),
-(2, 'kasir1', 'kasir123', 81234567891, 'kasir1@apotek.com', 'Jl. Sehat No.2', 'kasir', '2025-11-16 00:06:32', '2025-11-16 00:06:32'),
-(3, 'apoteker1', 'apoteker123', 81234567892, 'apoteker1@apotek.com', 'Jl. Sehat No.3', 'apoteker', '2025-11-16 00:06:32', '2025-11-16 00:06:32');
+INSERT INTO `users` (`id_user`, `nik`, `nama_lengkap`, `username`, `password`, `no_hp`, `email`, `alamat`, `role`, `created_at`, `updated_at`) VALUES
+(4, '25111', 'Admin', 'admin', 'admin', '0', 'admin@gmail.com', 'Purwodadi ', 'admin', '2025-11-21 06:44:27', '2025-11-21 07:17:46');
 
 --
 -- Indexes for dumped tables
@@ -341,7 +342,7 @@ ALTER TABLE `lokasi_penyimpanan`
 -- AUTO_INCREMENT for table `master_barang`
 --
 ALTER TABLE `master_barang`
-  MODIFY `id_barang` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id_barang` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `order`
@@ -365,7 +366,7 @@ ALTER TABLE `stok_opname`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Constraints for dumped tables
