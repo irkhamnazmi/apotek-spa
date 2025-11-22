@@ -26,15 +26,15 @@ class Satuan
 
     public function create($data)
     {
-        $stmt = $this->conn->prepare("INSERT INTO satuan (kode_barang, nama_satuan) VALUES (?, ?)");
-        $stmt->bind_param("si", $data['kode_barang'], $data['nama_satuan']);
+        $stmt = $this->conn->prepare("INSERT INTO satuan (kode_satuan, nama_satuan) VALUES (?, ?)");
+        $stmt->bind_param("ss", $data['kode_satuan'], $data['nama_satuan']);
         return $stmt->execute();
     }
 
     public function update($id, $data)
     {
-        $stmt = $this->conn->prepare("UPDATE satuan SET kode_barang=?, nama_satuan=? WHERE id_satuan=?");
-        $stmt->bind_param("sii", $data['kode_barang'], $data['nama_satuan'], $id);
+        $stmt = $this->conn->prepare("UPDATE satuan SET kode_satuan=?, nama_satuan=? WHERE id_satuan=?");
+        $stmt->bind_param("ssi", $data['kode_satuan'], $data['nama_satuan'], $id);
         return $stmt->execute();
     }
 
