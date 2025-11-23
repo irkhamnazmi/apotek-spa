@@ -1,4 +1,4 @@
-<div class="modal fade" id="modalPengguna" tabindex="-1">
+<div class="modal fade" id="modalLokasiPenyimpanan" tabindex="-1">
   <div class="modal-dialog modal-xl modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header bg-primary text-white">
@@ -16,76 +16,12 @@
           <div class="row">
             <div class="col-md-6">
               <div class="form-group">
-                <label>Nama Lengkap *</label>
-                <input type="text" class="form-control" id="namaLengkap" />
-              </div>
-            </div>
-
-            <div class="col-md-6">
-              <div class="form-group">
-                <label>Username *</label>
-                <input type="text" class="form-control" id="username" />
-              </div>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-md-6">
-              <div class="form-group position-relative">
-                <label>Password</label>
-                <input
-                  type="password"
-                  class="form-control"
-                  id="password"
-                  style="padding-right: 40px"
-                />
-                <span
-                  id="togglePassword"
-                  class="position-absolute"
-                  style="right: 10px; top: 38px; cursor: pointer; color: #888"
-                >
-                  <i class="fa fa-eye-slash"></i
-                ></span>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="form-group">
-                <label>No HP*</label>
+                <label>Nama Lokasi Penyimpanan*</label>
                 <input
                   type="text"
-                  inputmode="numeric"
                   class="form-control"
-                  id="noHp"
-                  oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                  id="namaLokasiPenyimpanan"
                 />
-              </div>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-md-6">
-              <div class="form-group">
-                <label>Email</label>
-                <input type="text" class="form-control" id="email" />
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="form-group">
-                <label>Alamat *</label>
-                <textarea class="form-control" id="alamat"></textarea>
-              </div>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-md-6">
-              <div class="form-group">
-                <label>Role</label>
-                <select class="form-control" id="role">
-                  <option value="admin">Admin</option>
-                  <option value="kasir">Kasir</option>
-                  <option value="apoteker">Apoteker</option>
-                </select>
               </div>
             </div>
           </div>

@@ -3,27 +3,6 @@ $(document).ready(function () {
   const host = `http://localhost:8081/palmirafit`; // Base URL API
 
   // Load modal sekali
-  if (!window._modalPenggunaLoaded) {
-    window._modalPenggunaLoaded = true;
-
-    $("#modalContainer").load(`${host}/modals/penggunaModal.html`, function () {
-      if ($("#modalPengguna").length === 0) {
-        console.error("❌ Modal gagal diload");
-        return;
-      }
-
-      $("#modalProgressContainer").load(`${host}/modals/progressModal.html`, function () {
-        console.log("⏳ Progress modal loaded");
-      });
-
-      bindModalEvents();
-     
-    });
-
-  } else {
-    bindModalEvents();
-  }
-
   // ===========================
   //   DATA TABLE
   // ===========================
@@ -32,21 +11,17 @@ $(document).ready(function () {
     responsive: true,
     dom: 'rtip',
     ajax: {
-      url: `${host}/api/users`,
+      url: `${host}/api/stok_opname`,
       dataSrc: (json) => json.data || [],
       error: () => alert("❌ Gagal mengambil data dari server!")
     },
     columns: [
-    { data: "nik" },
-    { data: "nama_lengkap" },
-    { data: "username" },
-    { data: "no_hp" },
-      { data: "email" },
-      { data: "alamat" },
-    { data: "role" },
-    
-    
-  
+      { data: "kode_barang" },
+      { data: "nama_barang" },
+      { data: "nama_lokasi_penyimpanan" },
+      { data: "stok_rak" },
+      { data: "kapasitas_rak" },
+      
     
     {
         data: null,
@@ -54,21 +29,17 @@ $(document).ready(function () {
         render: function (data, type, row) {
             return `
                 <button class="btn btn-sm btn-primary btnEdit"
-                        data-id="${row.id_user}"
-                        data-nik="${row.nik}"
-                        data-nama-lengkap="${row.nama_lengkap}"
-                        data-username="${row.username}"
-                        data-password="${row.password}"
-                        data-no-hp="${row.no_hp}"    
-                        data-email="${row.email}"
-                        data-alamat="${row.alamat}"
-                        data-role="${row.role}"
+                        data-id="${row.id_stok_opname}"
+                        data-id-barang="${row.id_barang}"
+                        data-kode-barang="${row.kode_barang}"
 
-
+                        data-id-lokasi-penyimpanan="${row.id_lokasi_penyimpanan}"
+                        data-stok-rak="${row.stok_rak}"
+                        data-kapasitas-rak="${row.kapasitas_rak}"
                        
                 >Edit</button>
 
-                <button class="btn btn-sm btn-danger btnHapus" data-id="${row.id_user}">
+                <button class="btn btn-sm btn-danger btnHapus" data-id="${row.id_stok_opname}">
                     Hapus
                 </button>
             `;
@@ -88,28 +59,25 @@ $(document).ready(function () {
     table.page.len(this.value).draw();
   });
 
-   $(document).on("click", "#togglePassword", function () {
-    const input = $("#password");
-    const icon = $(this).find("i");
+   
 
-    if (input.attr("type") === "password") {
-        input.attr("type", "text");
-        icon.removeClass("fa-eye-slash").addClass("fa-eye");
-    } else {
-        input.attr("type", "password");
-        icon.removeClass("fa-eye").addClass("fa-eye-slash");
+loadModal(
+    "#modalContainer",
+    `${host}/modals/stok-opnameModal.html`,
+    "#modalProgressContainer",
+    `${host}/modals/progressModal.html`,
+    function(modal) {
+        bindModalEvents(); // bind event setelah modal ada
+       
     }
-});
-
-
-  
+);
 
 
   // ===========================
   //   MODAL EVENTS
   // ===========================
   function bindModalEvents() {
-
+    
     // Clear duplicate events
     $(document).off("click", "#btnTambah");
     $(document).off("click", ".btnEdit");
@@ -118,9 +86,17 @@ $(document).ready(function () {
 
     $(document).on("click", "#btnTambah", function () {
       resetForm();
-      $("#modalPengguna .modal-title").text("Tambah Pengguna");
-      $("#modalPengguna").modal("show");
+      loadBarang("");
+      loadLokasiPenyimpanan("");
+
+      loadStokOpname();
+      
+      $("#modalStokOpname .modal-title").text("Tambah Stok Opname");
+      $("#modalStokOpname").modal("show");
     });
+
+   
+
 
 
    
@@ -128,65 +104,65 @@ $(document).ready(function () {
 
     
     $(document).on("click", ".btnEdit", function () {
-
+      resetForm();
       // ambil semua data-* dengan dash (-)
-        const id = $(this).data("id");
-        const nik = $(this).data("nik");
-        const namaLengkap = $(this).data("nama-lengkap");
-        const username = $(this).data("username");
-        const password = $(this).data("password");
-        const noHp = $(this).data("no-hp");
-        const email = $(this).data("email");
-        const alamat = $(this).data("alamat");
-        const role = $(this).data("role");
+      const id = $(this).data("id");
+      const idBarang = $(this).data("id-barang");
+      const kodeBarang = $(this).data("kode-barang");
+
+      const idLokasiPenyimpanan = $(this).data("id-lokasi-penyimpanan");
+      const stokRak = $(this).data("stok-rak");
+      const kapasitasRak = $(this).data("kapasitas-rak");
+
+
+      loadBarang(idBarang);
+      loadLokasiPenyimpanan(idLokasiPenyimpanan);
+      
+      loadStokOpname();
+      
+    
+      
+       
 
 
         // Isi form
-        $("#namaLengkap").val(namaLengkap);
-        $("#username").val(username);
-        $("#password").val(password);
-        $("#noHp").val(noHp);
-        $("#email").val(email);
-        $("#alamat").val(alamat);
-        $("#role").val(role);
+        $("#idBarang").val(idBarang);
+        $("#idLokasiPenyimpanan").val(idLokasiPenyimpanan);
+        $("#stokRak").val(stokRak);
 
-      $("#modalPengguna .modal-title").text(`Edit Pengguna ${nik}`);
+        $("#kapasitasRak").val(kapasitasRak);
+
+   
+
+      $("#modalStokOpname .modal-title").text(`Edit Stok Opname Barang ${kodeBarang}`);
 
       // Simpan ke button
       $("#btnSimpan").attr("data-id", id);
-      $("#btnSimpan").attr("data-nik", nik);
 
-      $("#modalPengguna").modal("show");
+      $("#modalStokOpname").modal("show");
     });
 
     // Simpan (Tambah / Edit)
     $(document).on("click", "#btnSimpan", function () {
 
       const id = $(this).attr("data-id") || null;
-      const nik = $(this).attr("data-nik") || "";
 
 
       const data = {
-        id_user: id,
-        nik: nik,
-        nama_lengkap: $("#namaLengkap").val(),
-        username: $("#username").val(),
-        password: $("#password").val(),
-        no_hp: $("#noHp").val() === "" ? "" : $("#noHp").val(),
-        email: $("#email").val(),
-        alamat: $("#alamat").val(),
-        role: $("#role").val(),
+        id_stok_opname: id,
+        id_barang: $("#idBarang").val(),
+        id_lokasi_penyimpanan: $("#idLokasiPenyimpanan").val(),
+        stok_rak: $("#stokRak").val(),
+        kapasitas_rak: $("#kapasitasRak").val(),
+
       };
 
 
-      
-
-      
 
       startProgress().then(() => {
 
         const method = id ? "PUT" : "POST";
-        const url = `${host}/api/users`;
+        const url = `${host}/api/stok_opname`;
         
         console.log(data);
 
@@ -198,9 +174,10 @@ $(document).ready(function () {
           data: JSON.stringify(data),
           success: function (res) {
             alert(res.meta?.message || "Berhasil disimpan!");
-            $("#modalPengguna").modal("hide");
+            $("#modalStokOpname").modal("hide");
             table.ajax.reload();
           },
+
           error: function () {
             alert("❌ Gagal menyimpan data!");
           }
@@ -214,15 +191,15 @@ $(document).ready(function () {
     $("#dataTable tbody").on("click", ".btnHapus", function () {
       const id = $(this).data("id");
 
-      if (!confirm("Yakin ingin menghapus pengguna ini?")) return;
+      if (!confirm("Yakin ingin menghapus stok opname ini?")) return;
 
       startProgress().then(() => { 
 
 
         $.ajax({
-          url: `${host}/api/users`,
+          url: `${host}/api/stok_opname`,
           type: "DELETE",
-          data: { id_user: id },
+          data: { id_stok_opname: id },
           success: function (res) {
             alert(res.meta?.message || "Berhasil dihapus!");
             table.ajax.reload();
@@ -239,16 +216,14 @@ $(document).ready(function () {
 
   // Reset form
   function resetForm() {
-     $("#namaLengkap").val("");
-        $("#username").val("");
-        $("#password").val("");
-        $("#noHp").val("");
-        $("#email").val("");
-        $("#alamat").val("");
-        $("#role").val("");
-
-    $("#btnSimpan").removeAttr("data-id");
-    $("#btnSimpan").removeAttr("data-nik");
+        $("#idBarang").val("");
+        $("#stokBarang").val("");
+        $("#idLokasiPenyimpanan").val("");
+        $("#stokRak").val("");
+        $("#inputStokRak").val("");
+        $("#kapasitasRak").val("");
+        $("#stokBarang").data("stok-awal", 0);
+        $("#btnSimpan").removeAttr("data-id");
   }
 
 
@@ -278,7 +253,127 @@ $(document).ready(function () {
     $("#progressText").text(value + "%");
   }
 
-  // Load satuan
+  function loadStokOpname(){
+      $(document).off("change", "#idBarang");
 
+    // PASANG ulang setelah modal diload
+    $(document).on("change", "#idBarang", function () {
+        let stokBarang = $(this).find("option:selected").data("stok-barang");
+
+        $("#stokBarang").val(stokBarang);
+        $("#stokBarang").data("stok-awal", stokBarang);
+    });
+
+
+$(document).on("input", "#inputStokRak", function () {
+
+    let stokAwal = parseInt($("#stokBarang").data("stok-awal")) || 0;
+    let stokBarang = parseInt($("#stokBarang").val()) || stokAwal;
+
+    let stokRak = parseInt($("#stokRak").val()) || 0;
+
+    let kapasitasRak = parseInt($("#kapasitasRak").val()) || 0;
+    let inputRak = parseInt($(this).val()) || 0;
+
+    let prevInput = parseInt($(this).data("prev")) || 0;
+
+    // Batasi maksimal kapasitas
+    if (inputRak > kapasitasRak) {
+        inputRak = kapasitasRak;
+        $(this).val(inputRak);
+    }
+
+    // Hitung delta
+    let selisih = inputRak - prevInput;
+
+    // Update stok
+    let stokRakBaru = stokRak + selisih;
+    let stokBarangBaru = stokBarang - selisih;
+
+    if (stokRakBaru < 0) stokRakBaru = 0;
+    if (stokBarangBaru < 0) stokBarangBaru = 0;
+
+    // Tampilkan hasil
+    $("#stokRak").val(stokRakBaru);
+    $("#stokBarang").val(stokBarangBaru);
+
+    // Simpan nilai input sebelumnya
+    $(this).data("prev", inputRak);
+});
+
+  }
+
+
+
+
+  function loadBarang(v = "") {
+    
+    $.ajax({
+      url: `${host}/api/master_barang`,
+      type: "GET",
+      success: function (res) {
+        const list = res.data || [];
+        const dropdown = $("#idBarang");
+
+        dropdown.empty();
+        dropdown.append(`<option>-- Pilih Barang --</option>`);
+
+         list.forEach(item => {
+        dropdown.append(`
+          <option 
+            value="${item.id_barang}"
+            data-stok-barang="${item.stok_barang}"
+          >
+           ${item.kode_barang} ${item.nama_barang}
+          </option>
+        `);
+      });
+         if (v) {
+        dropdown.val(String(v)).trigger("change");
+        
+      }
+      },
+      error: function () {
+        console.error("❌ Gagal load data barang");
+      }
+    });
+  }
+
+
+ 
+     
+
+  function loadLokasiPenyimpanan(v = "") {
+    
+    $.ajax({
+      url: `${host}/api/lokasi_penyimpanan`,
+      type: "GET",
+      success: function (res) {
+        const list = res.data || [];
+        const dropdown = $("#idLokasiPenyimpanan");
+
+        dropdown.empty();
+        dropdown.append(`<option>-- Pilih Lokasi Penyimpanan --</option>`);
+
+        list.forEach(item => {
+          dropdown.append(`
+            <option value="${item.id_lokasi_penyimpanan}">
+              ${item.nama_lokasi_penyimpanan}
+            </option>
+          `);
+        });
+
+         if (v) {
+        dropdown.val(String(v)).trigger("change");
+      }
+      },
+      error: function () {
+        console.error("❌ Gagal load data barang");
+      }
+    });
+  }
+
+
+ 
 
 });

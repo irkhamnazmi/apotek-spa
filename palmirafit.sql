@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.2
+-- version 5.2.3
 -- https://www.phpmyadmin.net/
 --
 -- Host: mariadb
--- Generation Time: Nov 22, 2025 at 05:57 AM
--- Server version: 10.6.23-MariaDB-ubu2204
--- PHP Version: 8.2.27
+-- Generation Time: Nov 23, 2025 at 11:42 PM
+-- Server version: 10.6.24-MariaDB-ubu2204
+-- PHP Version: 8.3.26
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -38,9 +38,9 @@ CREATE TABLE `jenis_pembayaran` (
 --
 
 INSERT INTO `jenis_pembayaran` (`id_jenis_pembayaran`, `kode_jenis_pembayaran`, `nama_jenis_pembayaran`) VALUES
-(1, 'JP001', 'Tunai'),
-(2, 'JP002', 'Debit'),
-(3, 'JP003', 'E-Wallet');
+(8, 'JP001', 'Tunai'),
+(11, 'JP002', 'E-wallet'),
+(12, 'JP003', 'Debit');
 
 -- --------------------------------------------------------
 
@@ -60,16 +60,6 @@ CREATE TABLE `kasir` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `kasir`
---
-
-INSERT INTO `kasir` (`id_kasir`, `no_struk`, `id_kasir_detail`, `waktu`, `total`, `jenis_pembayaran`, `bayar`, `kembali`, `created_at`) VALUES
-(5, 'STRUK001', 1, '2025-11-16 00:12:38', 15000.00, 1, 20000.00, 5000.00, '2025-11-16 00:12:38'),
-(6, 'STRUK002', 2, '2025-11-16 00:12:38', 15000.00, 2, 15000.00, 0.00, '2025-11-16 00:12:38'),
-(7, 'STRUK003', 3, '2025-11-16 00:12:38', 16000.00, 3, 20000.00, 4000.00, '2025-11-16 00:12:38'),
-(8, 'STRUK004', 4, '2025-11-16 00:12:38', 24000.00, 1, 25000.00, 1000.00, '2025-11-16 00:12:38');
-
 -- --------------------------------------------------------
 
 --
@@ -83,16 +73,6 @@ CREATE TABLE `kasir_detail` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `kasir_detail`
---
-
-INSERT INTO `kasir_detail` (`id_kasir_detail`, `id_order`, `subtotal`, `created_at`) VALUES
-(1, 1, 15000, '2025-11-16 00:12:25'),
-(2, 2, 15000, '2025-11-16 00:12:25'),
-(3, 3, 16000, '2025-11-16 00:12:25'),
-(4, 4, 24000, '2025-11-16 00:12:25');
-
 -- --------------------------------------------------------
 
 --
@@ -102,14 +82,14 @@ INSERT INTO `kasir_detail` (`id_kasir_detail`, `id_order`, `subtotal`, `created_
 CREATE TABLE `lokasi_penyimpanan` (
   `id_lokasi_penyimpanan` int(11) NOT NULL,
   `kode_lokasi_penyimpanan` char(10) DEFAULT NULL,
-  `lokasi_penyimpanan` text DEFAULT NULL
+  `nama_lokasi_penyimpanan` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `lokasi_penyimpanan`
 --
 
-INSERT INTO `lokasi_penyimpanan` (`id_lokasi_penyimpanan`, `kode_lokasi_penyimpanan`, `lokasi_penyimpanan`) VALUES
+INSERT INTO `lokasi_penyimpanan` (`id_lokasi_penyimpanan`, `kode_lokasi_penyimpanan`, `nama_lokasi_penyimpanan`) VALUES
 (1, 'L001', 'Rak A1'),
 (2, 'L002', 'Rak B1'),
 (3, 'L003', 'Rak C1'),
@@ -140,11 +120,11 @@ CREATE TABLE `master_barang` (
 --
 
 INSERT INTO `master_barang` (`id_barang`, `kode_barang`, `nama_barang`, `id_satuan`, `harga_beli`, `harga_jual`, `stok_minimum`, `stok_barang`, `tgl_kadaluarsa`, `created_at`, `updated_at`) VALUES
-(5, 'OB001', 'Paracetamol 500mg', 3, 1000.00, 1500.00, 50, 200, '2025-12-31', '2025-11-16 00:06:11', '2025-11-16 00:06:11'),
+(5, 'OB001', 'Paracetamol 500mg', 3, 1000.00, 1500.00, 50, 201, '2025-12-31', '2025-11-16 00:06:11', '2025-11-23 14:55:22'),
 (6, 'OB002', 'Amoxicillin 500mg', 3, 2000.00, 3000.00, 30, 100, '2024-10-31', '2025-11-16 00:06:11', '2025-11-16 00:06:11'),
 (7, 'OB003', 'Vitamin C 1000mg', 1, 500.00, 800.00, 20, 150, '2026-03-31', '2025-11-16 00:06:11', '2025-11-16 00:06:11'),
-(8, 'OB004', 'Cough Syrup 100ml', 2, 8000.00, 12000.00, 10, 50, '2025-06-30', '2025-11-16 00:06:11', '2025-11-16 00:06:11'),
-(10, 'OB005', 'Komix', 1, 2000.00, 3000.00, 10, 100, '2025-11-29', '2025-11-19 08:00:44', '2025-11-19 08:00:44');
+(8, 'OB004', 'Cough Syrup 100ml', 2, 8000.00, 12000.00, 10, 36, '2025-06-30', '2025-11-16 00:06:11', '2025-11-23 23:41:08'),
+(10, 'OB005', 'Komix', 1, 2000.00, 3000.00, 10, 96, '2025-11-29', '2025-11-19 08:00:44', '2025-11-23 23:41:48');
 
 -- --------------------------------------------------------
 
@@ -190,7 +170,7 @@ INSERT INTO `satuan` (`id_satuan`, `kode_satuan`, `nama_satuan`) VALUES
 (1, 'S001', 'Pcs'),
 (2, 'S002', 'Botol'),
 (3, 'S003', 'Strip'),
-(4, 'S004', 'Box');
+(4, 'S004', 'Boxx');
 
 -- --------------------------------------------------------
 
@@ -213,10 +193,11 @@ CREATE TABLE `stok_opname` (
 --
 
 INSERT INTO `stok_opname` (`id_stok_opname`, `id_barang`, `id_lokasi_penyimpanan`, `stok_rak`, `kapasitas_rak`, `created_at`, `updated_at`) VALUES
-(9, 5, 1, 50, 100, '2025-11-16 00:10:37', '2025-11-16 00:10:37'),
+(9, 5, 1, 44, 11, '2025-11-16 00:10:37', '2025-11-23 03:59:03'),
 (10, 6, 2, 30, 50, '2025-11-16 00:10:37', '2025-11-16 00:10:37'),
 (11, 7, 3, 100, 200, '2025-11-16 00:10:37', '2025-11-16 00:10:37'),
-(12, 8, 1, 20, 50, '2025-11-16 00:10:37', '2025-11-16 00:10:37');
+(13, 5, 1, 9, 10, '2025-11-23 11:56:21', '2025-11-23 14:55:22'),
+(15, 8, 3, 24, 100, '2025-11-23 11:58:24', '2025-11-23 23:41:08');
 
 -- --------------------------------------------------------
 
@@ -318,7 +299,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `jenis_pembayaran`
 --
 ALTER TABLE `jenis_pembayaran`
-  MODIFY `id_jenis_pembayaran` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_jenis_pembayaran` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `kasir`
@@ -336,7 +317,7 @@ ALTER TABLE `kasir_detail`
 -- AUTO_INCREMENT for table `lokasi_penyimpanan`
 --
 ALTER TABLE `lokasi_penyimpanan`
-  MODIFY `id_lokasi_penyimpanan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_lokasi_penyimpanan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `master_barang`
@@ -354,13 +335,13 @@ ALTER TABLE `order`
 -- AUTO_INCREMENT for table `satuan`
 --
 ALTER TABLE `satuan`
-  MODIFY `id_satuan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_satuan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `stok_opname`
 --
 ALTER TABLE `stok_opname`
-  MODIFY `id_stok_opname` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id_stok_opname` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `users`

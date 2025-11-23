@@ -49,7 +49,7 @@ $(document).ready(function () {
         render: function (data, type, row) {
             return `
                 <button class="btn btn-sm btn-primary btnEdit"
-                        data-id="${row.id_user}"
+                        data-id="${row.id_satuan}"
                         data-kode-satuan="${row.kode_satuan}"
                         data-nama-satuan="${row.nama_satuan}"
 
@@ -135,6 +135,8 @@ $(document).ready(function () {
 
       // Simpan ke button
       $("#btnSimpan").attr("data-id", id);
+      $("#btnSimpan").attr("data-kode-satuan", kodeSatuan);
+
 
       $("#modalSatuan").modal("show");
     });
@@ -143,10 +145,12 @@ $(document).ready(function () {
     $(document).on("click", "#btnSimpan", function () {
 
       const id = $(this).attr("data-id") || null;
+      const kodeSatuan = $(this).attr("data-kode-satuan") || null;
 
 
       const data = {
         id_satuan: id,
+        kode_satuan: kodeSatuan,
         nama_satuan: $("#namaSatuan").val(),
       };
 
@@ -215,6 +219,7 @@ $(document).ready(function () {
         
 
     $("#btnSimpan").removeAttr("data-id");
+    $("#btnSimpan").removeAttr("data-kode-satuan");
   }
 
 

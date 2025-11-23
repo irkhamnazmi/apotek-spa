@@ -2,27 +2,16 @@ $(document).ready(function () {
 
   const host = `http://localhost:8081/palmirafit`; // Base URL API
 
-  // Load modal sekali
-  if (!window._modalPenggunaLoaded) {
-    window._modalPenggunaLoaded = true;
-
-    $("#modalContainer").load(`${host}/modals/penggunaModal.html`, function () {
-      if ($("#modalPengguna").length === 0) {
-        console.error("❌ Modal gagal diload");
-        return;
-      }
-
-      $("#modalProgressContainer").load(`${host}/modals/progressModal.html`, function () {
-        console.log("⏳ Progress modal loaded");
-      });
-
-      bindModalEvents();
-     
-    });
-
-  } else {
-    bindModalEvents();
-  }
+   loadModal(
+    "#modalContainer",
+    `${host}/modals/jenis-pembayaranModal.html`,
+    "#modalProgressContainer",
+    `${host}/modals/progressModal.html`,
+    function(modal) {
+        bindModalEvents(); // bind event setelah modal ada
+       
+    }
+);
 
   // ===========================
   //   DATA TABLE
@@ -32,18 +21,14 @@ $(document).ready(function () {
     responsive: true,
     dom: 'rtip',
     ajax: {
-      url: `${host}/api/users`,
+      url: `${host}/api/jenis_pembayaran`,
       dataSrc: (json) => json.data || [],
       error: () => alert("❌ Gagal mengambil data dari server!")
     },
     columns: [
-    { data: "nik" },
-    { data: "nama_lengkap" },
-    { data: "username" },
-    { data: "no_hp" },
-      { data: "email" },
-      { data: "alamat" },
-    { data: "role" },
+    { data: "kode_jenis_pembayaran" },
+    { data: "nama_jenis_pembayaran" },
+    
     
     
   
@@ -54,21 +39,15 @@ $(document).ready(function () {
         render: function (data, type, row) {
             return `
                 <button class="btn btn-sm btn-primary btnEdit"
-                        data-id="${row.id_user}"
-                        data-nik="${row.nik}"
-                        data-nama-lengkap="${row.nama_lengkap}"
-                        data-username="${row.username}"
-                        data-password="${row.password}"
-                        data-no-hp="${row.no_hp}"    
-                        data-email="${row.email}"
-                        data-alamat="${row.alamat}"
-                        data-role="${row.role}"
-
+                        data-id="${row.id_jenis_pembayaran}"
+                         data-kode-jenis-pembayaran="${row.kode_jenis_pembayaran}"
+                        data-nama-jenis-pembayaran="${row.nama_jenis_pembayaran}"
+                    
 
                        
                 >Edit</button>
 
-                <button class="btn btn-sm btn-danger btnHapus" data-id="${row.id_user}">
+                <button class="btn btn-sm btn-danger btnHapus" data-id="${row.id_jenis_pembayaran}">
                     Hapus
                 </button>
             `;
@@ -88,18 +67,7 @@ $(document).ready(function () {
     table.page.len(this.value).draw();
   });
 
-   $(document).on("click", "#togglePassword", function () {
-    const input = $("#password");
-    const icon = $(this).find("i");
-
-    if (input.attr("type") === "password") {
-        input.attr("type", "text");
-        icon.removeClass("fa-eye-slash").addClass("fa-eye");
-    } else {
-        input.attr("type", "password");
-        icon.removeClass("fa-eye").addClass("fa-eye-slash");
-    }
-});
+   
 
 
   
@@ -118,8 +86,8 @@ $(document).ready(function () {
 
     $(document).on("click", "#btnTambah", function () {
       resetForm();
-      $("#modalPengguna .modal-title").text("Tambah Pengguna");
-      $("#modalPengguna").modal("show");
+      $("#modalJenisPembayaran .modal-title").text("Tambah Pengguna");
+      $("#modalJenisPembayaran").modal("show");
     });
 
 
@@ -131,51 +99,39 @@ $(document).ready(function () {
 
       // ambil semua data-* dengan dash (-)
         const id = $(this).data("id");
-        const nik = $(this).data("nik");
-        const namaLengkap = $(this).data("nama-lengkap");
-        const username = $(this).data("username");
-        const password = $(this).data("password");
-        const noHp = $(this).data("no-hp");
-        const email = $(this).data("email");
-        const alamat = $(this).data("alamat");
-        const role = $(this).data("role");
+      const kodeJenisPembayaran = $(this).data("kode-jenis-pembayaran");
+        const namaJenisPembayaran = $(this).data("nama-jenis-pembayaran");
+      
+       
 
 
         // Isi form
-        $("#namaLengkap").val(namaLengkap);
-        $("#username").val(username);
-        $("#password").val(password);
-        $("#noHp").val(noHp);
-        $("#email").val(email);
-        $("#alamat").val(alamat);
-        $("#role").val(role);
+        $("#namaJenisPembayaran").val(namaJenisPembayaran);
+    
 
-      $("#modalPengguna .modal-title").text(`Edit Pengguna ${nik}`);
+      $("#modalJenisPembayaran .modal-title").text(`Edit Jenis Pembayaran ${kodeJenisPembayaran}`);
 
       // Simpan ke button
       $("#btnSimpan").attr("data-id", id);
-      $("#btnSimpan").attr("data-nik", nik);
+      $("#btnSimpan").attr("data-kode-jenis-pembayaran", kodeJenisPembayaran);
 
-      $("#modalPengguna").modal("show");
+
+      $("#modalJenisPembayaran").modal("show");
     });
 
     // Simpan (Tambah / Edit)
     $(document).on("click", "#btnSimpan", function () {
 
       const id = $(this).attr("data-id") || null;
-      const nik = $(this).attr("data-nik") || "";
+      const kodeJenisPembayaran = $(this).attr("data-kode-jenis-pembayaran") || null;
+
 
 
       const data = {
-        id_user: id,
-        nik: nik,
-        nama_lengkap: $("#namaLengkap").val(),
-        username: $("#username").val(),
-        password: $("#password").val(),
-        no_hp: $("#noHp").val() === "" ? "" : $("#noHp").val(),
-        email: $("#email").val(),
-        alamat: $("#alamat").val(),
-        role: $("#role").val(),
+        id_jenis_pembayaran: id,
+        kode_jenis_pembayaran: kodeJenisPembayaran,
+        nama_jenis_pembayaran: $("#namaJenisPembayaran").val(),
+       
       };
 
 
@@ -186,7 +142,7 @@ $(document).ready(function () {
       startProgress().then(() => {
 
         const method = id ? "PUT" : "POST";
-        const url = `${host}/api/users`;
+        const url = `${host}/api/jenis_pembayaran`;
         
         console.log(data);
 
@@ -198,7 +154,7 @@ $(document).ready(function () {
           data: JSON.stringify(data),
           success: function (res) {
             alert(res.meta?.message || "Berhasil disimpan!");
-            $("#modalPengguna").modal("hide");
+            $("#modalJenisPembayaran").modal("hide");
             table.ajax.reload();
           },
           error: function () {
@@ -213,6 +169,8 @@ $(document).ready(function () {
     // Hapus
     $("#dataTable tbody").on("click", ".btnHapus", function () {
       const id = $(this).data("id");
+      console.log(id);
+      
 
       if (!confirm("Yakin ingin menghapus pengguna ini?")) return;
 
@@ -220,9 +178,9 @@ $(document).ready(function () {
 
 
         $.ajax({
-          url: `${host}/api/users`,
+          url: `${host}/api/jenis_pembayaran`,
           type: "DELETE",
-          data: { id_user: id },
+          data: { id_jenis_pembayaran: id },
           success: function (res) {
             alert(res.meta?.message || "Berhasil dihapus!");
             table.ajax.reload();
@@ -239,16 +197,11 @@ $(document).ready(function () {
 
   // Reset form
   function resetForm() {
-     $("#namaLengkap").val("");
-        $("#username").val("");
-        $("#password").val("");
-        $("#noHp").val("");
-        $("#email").val("");
-        $("#alamat").val("");
-        $("#role").val("");
-
+     $("#namaJenisPembayaran").val("");
+        
     $("#btnSimpan").removeAttr("data-id");
-    $("#btnSimpan").removeAttr("data-nik");
+    $("#btnSimpan").removeAttr("data-kode-jenis-pembayaran");
+
   }
 
 

@@ -26,6 +26,10 @@ class Satuan
 
     public function create($data)
     {
+
+        if (empty($data['kode_satuan'])) {
+            $data['kode_satuan'] = $this->generateKodeBarang();
+        }
         $stmt = $this->conn->prepare("INSERT INTO satuan (kode_satuan, nama_satuan) VALUES (?, ?)");
         $stmt->bind_param("ss", $data['kode_satuan'], $data['nama_satuan']);
         return $stmt->execute();
@@ -43,5 +47,27 @@ class Satuan
         $stmt = $this->conn->prepare("DELETE FROM satuan WHERE id_satuan=?");
         $stmt->bind_param("i", $id);
         return $stmt->execute();
+    }
+
+    public function generateKodeBarang()
+    {
+        $query = "SELECT kode_satuan FROM satuan ORDER BY id_satuan DESC LIMIT 1";
+        $result = $this->conn->query($query);
+
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+
+
+            $lastNumber = intval(substr($row['kode_satuan'], 2));
+
+            // Tambah 1
+            $newNumber = $lastNumber + 1;
+        } else {
+
+            $newNumber = 1;
+        }
+
+        // Format 3 digit
+        return "S" . str_pad($newNumber, 3, "0", STR_PAD_LEFT);
     }
 }

@@ -2,27 +2,16 @@ $(document).ready(function () {
 
   const host = `http://localhost:8081/palmirafit`; // Base URL API
 
-  // Load modal sekali
-  if (!window._modalBarangLoaded) {
-    window._modalBarangLoaded = true;
-
-    $("#modalContainer").load(`${host}/modals/barangModal.html`, function () {
-      if ($("#modalBarang").length === 0) {
-        console.error("❌ Modal gagal diload");
-        return;
-      }
-
-      $("#modalProgressContainer").load(`${host}/modals/progressModal.html`, function () {
-        console.log("⏳ Progress modal loaded");
-      });
-
-      bindModalEvents();
-      loadSatuan();
-    });
-
-  } else {
-    bindModalEvents();
-  }
+ loadModal(
+    "#modalContainer",
+    `${host}/modals/barangModal.html`,
+    "#modalProgressContainer",
+    `${host}/modals/progressModal.html`,
+    function(modal) {
+        bindModalEvents(); // bind event setelah modal ada
+       
+    }
+);
 
   // ===========================
   //   DATA TABLE
@@ -120,7 +109,7 @@ $(document).ready(function () {
     });
 
     // Edit Barang
-    $(document).on("click", ".btnEdietBarang", function () {
+    $(document).on("click", ".btnEditBarang", function () {
 
       // ambil semua data-* dengan dash (-)
       const idBarang = $(this).data("id-barang");

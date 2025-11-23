@@ -2,27 +2,17 @@ $(document).ready(function () {
 
   const host = `http://localhost:8081/palmirafit`; // Base URL API
 
-  // Load modal sekali
-  if (!window._modalPenggunaLoaded) {
-    window._modalPenggunaLoaded = true;
 
-    $("#modalContainer").load(`${host}/modals/penggunaModal.html`, function () {
-      if ($("#modalPengguna").length === 0) {
-        console.error("❌ Modal gagal diload");
-        return;
-      }
-
-      $("#modalProgressContainer").load(`${host}/modals/progressModal.html`, function () {
-        console.log("⏳ Progress modal loaded");
-      });
-
-      bindModalEvents();
-     
-    });
-
-  } else {
-    bindModalEvents();
-  }
+   loadModal(
+    "#modalContainer",
+    `${host}/modals/penggunaModal.html`,
+    "#modalProgressContainer",
+    `${host}/modals/progressModal.html`,
+    function(modal) {
+        bindModalEvents(); // bind event setelah modal ada
+       
+    }
+);
 
   // ===========================
   //   DATA TABLE
