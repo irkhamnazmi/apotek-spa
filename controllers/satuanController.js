@@ -3,26 +3,7 @@ $(document).ready(function () {
   const host = `http://localhost:8081/palmirafit`; // Base URL API
 
   // Load modal sekali
-  if (!window._modalSatuanLoaded) {
-    window._modalSatuanLoaded = true;
 
-    $("#modalContainer").load(`${host}/modals/satuanModal.html`, function () {
-      if ($("#modalSatuan").length === 0) {
-        console.error("❌ Modal gagal diload");
-        return;
-      }
-
-      $("#modalProgressContainer").load(`${host}/modals/progressModal.html`, function () {
-        console.log("⏳ Progress modal loaded");
-      });
-
-      bindModalEvents();
-     
-    });
-
-  } else {
-    bindModalEvents();
-  }
 
   // ===========================
   //   DATA TABLE
@@ -79,18 +60,16 @@ $(document).ready(function () {
     table.page.len(this.value).draw();
   });
 
-   $(document).on("click", "#togglePassword", function () {
-    const input = $("#password");
-    const icon = $(this).find("i");
-
-    if (input.attr("type") === "password") {
-        input.attr("type", "text");
-        icon.removeClass("fa-eye-slash").addClass("fa-eye");
-    } else {
-        input.attr("type", "password");
-        icon.removeClass("fa-eye").addClass("fa-eye-slash");
+  loadModal(
+    "#modalContainer",
+    `${host}/modals/satuanModal.html`,
+    "#modalProgressContainer",
+    `${host}/modals/progressModal.html`,
+    function(modal) {
+        bindModalEvents(); // bind event setelah modal ada
+       
     }
-});
+);
 
 
   

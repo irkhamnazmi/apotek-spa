@@ -95,18 +95,7 @@ elseif ($table === 'stok_opname') {
     }
 }
 
-// ====================== ORDER ======================
-elseif ($table === 'order') {
-    require_once __DIR__ . "/../controllers/OrderController.php";
-    $c = new OrderController();
-    if ($method === 'GET') isset($_GET['id_order']) ? $c->show($_GET['id_order']) : $c->index();
-    elseif ($method === 'POST') $c->store(parseInput());
-    elseif ($method === 'PUT') $c->update(parseInput()['id_order'], parseInput());
-    elseif ($method === 'DELETE') {
-        parse_str(file_get_contents("php://input"), $input);
-        $c->destroy($input['id_order']);
-    }
-}
+
 
 // ====================== KASIR_DETAIL ======================
 elseif ($table === 'kasir_detail') {
