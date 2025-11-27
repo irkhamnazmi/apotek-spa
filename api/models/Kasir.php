@@ -11,20 +11,20 @@ class Kasir
     }
 
     // ==================================================
-    // GENERATE NO STRUK → format: 0001/11/25
+    // GENERATE NO STRUK
     // ==================================================
     public function generateNoStruk()
     {
         $bln = date("m");
-        $thn = date("y"); // 2 digit tahun
+        $thn = date("y");
 
-        // Ambil nomor terakhir sesuai bulan & tahun
         $sql = "
             SELECT no_struk FROM kasir
             WHERE no_struk LIKE '%/$bln/$thn'
             ORDER BY id_kasir DESC
             LIMIT 1
         ";
+
         $res = $this->conn->query($sql);
         $last = $res->fetch_assoc();
 
@@ -39,13 +39,15 @@ class Kasir
     }
 
     // ==================================================
-    // GET ALL KASIR (TABEL UTAMA)
+    // GET ALL
     // ==================================================
     public function getAll()
     {
-        $sql = "SELECT a.*, us.*,             
-        FROM kasir a INNER JOIN users us ON us.id_user = a.id_user INNER JOIN stok_opname so ON so.id_stok_opname = a.id_user";
-
+        $sql = "SELECT a.*, us.username, jp.nama_jenis_pembayaran
+                FROM kasir a
+                LEFT JOIN users us ON us.id_user = a.id_user
+                LEFT JOIN jenis_pembayaran jp ON jp.id_jenis_pembayaran = a.id_jenis_pembayaran
+                ORDER BY a.id_kasir DESC";
 
         $data = [];
         $res = $this->conn->query($sql);
@@ -57,28 +59,34 @@ class Kasir
         return $data;
     }
 
-
     // ==================================================
-    // GET DETAIL BY ID
+    // GET BY ID
     // ==================================================
     public function getById($id)
     {
         $id = intval($id);
 
-        $kasir = $this->conn->query("
-            SELECT * FROM kasir WHERE id_kasir=$id
-        ")->fetch_assoc();
+        $sql = "SELECT a.*, us.username, jp.nama_jenis_pembayaran
+                FROM kasir a
+                LEFT JOIN users us ON us.id_user = a.id_user
+                LEFT JOIN jenis_pembayaran jp ON jp.id_jenis_pembayaran = a.id_jenis_pembayaran
+                WHERE a.id_kasir = $id";
 
+        $kasir = $this->conn->query($sql)->fetch_assoc();
         if (!$kasir) return null;
 
+        // DETAIL
         $detail = [];
-        $res = $this->conn->query("
-            SELECT kd.*, b.nama_barang 
+        $q = $this->conn->query("
+            SELECT kd.*, so.nama_barang
             FROM kasir_detail kd
-            LEFT JOIN stok_opname b ON kd.id_barang = b.id_barang
-            WHERE kd.id_kasir=$id
+            LEFT JOIN stok_opname so ON so.id_stok_opname = kd.id_stok_opname
+            WHERE kd.id_kasir = $id
         ");
-        while ($row = $res->fetch_assoc()) $detail[] = $row;
+
+        while ($row = $q->fetch_assoc()) {
+            $detail[] = $row;
+        }
 
         return [
             "kasir" => $kasir,
@@ -87,23 +95,25 @@ class Kasir
     }
 
     // ==================================================
-    // CREATE KASIR
+    // CREATE
     // ==================================================
     public function create($d)
     {
         $this->conn->begin_transaction();
-        try {
 
+        try {
             if (empty($d['no_struk'])) {
                 $d['no_struk'] = $this->generateNoStruk();
             }
 
             $stmt = $this->conn->prepare("
-                INSERT INTO kasir(no_struk, waktu, id_jenis_pembayaran, total, bayar, kembali, id_user)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
-            ");
+            INSERT INTO kasir(no_struk, waktu, id_jenis_pembayaran, total, bayar, kembali, id_user)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        ");
+
+            // FORMAT PARAMETER = ssidddi
             $stmt->bind_param(
-                "ssiddii",
+                "ssidddi",
                 $d['no_struk'],
                 $d['waktu'],
                 $d['id_jenis_pembayaran'],
@@ -112,33 +122,35 @@ class Kasir
                 $d['kembali'],
                 $d['id_user']
             );
-            $stmt->execute();
 
+            $stmt->execute();
             $id_kasir = $stmt->insert_id;
 
-            // INSERT DETAIL & KURANGI STOK
+            // ==================================================
+            // INSERT DETAIL
+            // ==================================================
             foreach ($d['kasir_detail'] as $item) {
 
+                // Insert detail langsung tanpa ambil id_barang
                 $stmtDetail = $this->conn->prepare("
-                    INSERT INTO kasir_detail(id_kasir, id_barang, qty, subtotal)
-                    VALUES (?, ?, ?, ?)
-                ");
+                INSERT INTO kasir_detail(id_kasir, id_stok_opname, qty, subtotal)
+                VALUES (?, ?, ?, ?)
+            ");
                 $stmtDetail->bind_param(
                     "iiid",
                     $id_kasir,
-                    $item['id_barang'],
+                    $item['id_stok_opname'],
                     $item['qty'],
                     $item['subtotal']
                 );
                 $stmtDetail->execute();
 
                 // Kurangi stok
-                $stmtStok = $this->conn->prepare("
-                    UPDATE stok_opname SET stok_rak = stok_rak - ? 
-                    WHERE id_barang = ?
-                ");
-                $stmtStok->bind_param("ii", $item['qty'], $item['id_barang']);
-                $stmtStok->execute();
+                $this->conn->query("
+                UPDATE stok_opname 
+                SET stok_rak = stok_rak - {$item['qty']}
+                WHERE id_stok_opname = {$item['id_stok_opname']}
+            ");
             }
 
             $this->conn->commit();
@@ -149,38 +161,40 @@ class Kasir
         }
     }
 
+
+
     // ==================================================
-    // UPDATE KASIR
+    // UPDATE
     // ==================================================
     public function update($id, $d)
     {
         $this->conn->begin_transaction();
-        try {
 
+        try {
             $id = intval($id);
 
-            // ROLLBACK STOK LAMA
+            // Kembalikan stok lama
             $res = $this->conn->query("
-                SELECT id_barang, qty FROM kasir_detail WHERE id_kasir=$id
+                SELECT id_stok_opname, qty 
+                FROM kasir_detail 
+                WHERE id_kasir = $id
             ");
 
             while ($row = $res->fetch_assoc()) {
-                $stmtRollback = $this->conn->prepare("
-                    UPDATE stok_opname SET stok_rak = stok_rak + ? 
-                    WHERE id_barang = ?
+                $this->conn->query("
+                    UPDATE stok_opname SET stok_rak = stok_rak + {$row['qty']}
+                    WHERE id_stok_opname = {$row['id_stok_opname']}
                 ");
-                $stmtRollback->bind_param("ii", $row['qty'], $row['id_barang']);
-                $stmtRollback->execute();
             }
 
-            // UPDATE KASIR
+            // Update header
             $stmt = $this->conn->prepare("
                 UPDATE kasir 
                 SET no_struk=?, waktu=?, id_jenis_pembayaran=?, total=?, bayar=?, kembali=?, id_user=? 
                 WHERE id_kasir=?
             ");
             $stmt->bind_param(
-                "ssiddiii",
+                "ssidddii",
                 $d['no_struk'],
                 $d['waktu'],
                 $d['id_jenis_pembayaran'],
@@ -192,32 +206,39 @@ class Kasir
             );
             $stmt->execute();
 
-            // HAPUS DETAIL LAMA
-            $this->conn->query("DELETE FROM kasir_detail WHERE id_kasir=$id");
+            // Hapus detail lama
+            $this->conn->query("DELETE FROM kasir_detail WHERE id_kasir = $id");
 
-            // INSERT DETAIL BARU & KURANGI STOK
+            // INSERT DETAIL BARU
             foreach ($d['kasir_detail'] as $item) {
 
+                // Ambil id_barang dari stok_opname
+                $q = $this->conn->query("
+                    SELECT id_barang FROM stok_opname 
+                    WHERE id_stok_opname = {$item['id_stok_opname']}
+                ");
+                $stok = $q->fetch_assoc();
+                $id_barang = $stok['id_barang'];
+
                 $stmtDetail = $this->conn->prepare("
-                    INSERT INTO kasir_detail(id_kasir, id_barang, qty, subtotal)
-                    VALUES (?, ?, ?, ?)
+                    INSERT INTO kasir_detail(id_kasir, id_barang, id_stok_opname, qty, subtotal)
+                    VALUES (?, ?, ?, ?, ?)
                 ");
                 $stmtDetail->bind_param(
-                    "iiid",
+                    "iiiid",
                     $id,
-                    $item['id_barang'],
+                    $id_barang,
+                    $item['id_stok_opname'],
                     $item['qty'],
                     $item['subtotal']
                 );
                 $stmtDetail->execute();
 
                 // Kurangi stok baru
-                $stmtStok = $this->conn->prepare("
-                    UPDATE stok_opname SET stok_rak = stok_rak - ? 
-                    WHERE id_barang = ?
+                $this->conn->query("
+                    UPDATE stok_opname SET stok_rak = stok_rak - {$item['qty']}
+                    WHERE id_stok_opname = {$item['id_stok_opname']}
                 ");
-                $stmtStok->bind_param("ii", $item['qty'], $item['id_barang']);
-                $stmtStok->execute();
             }
 
             $this->conn->commit();
@@ -229,7 +250,7 @@ class Kasir
     }
 
     // ==================================================
-    // DELETE KASIR
+    // DELETE
     // ==================================================
     public function delete($id)
     {
@@ -240,16 +261,14 @@ class Kasir
 
             // Kembalikan stok
             $res = $this->conn->query("
-                SELECT id_barang, qty FROM kasir_detail WHERE id_kasir=$id
+                SELECT id_stok_opname, qty FROM kasir_detail WHERE id_kasir=$id
             ");
 
             while ($row = $res->fetch_assoc()) {
-                $stmtRollback = $this->conn->prepare("
-                    UPDATE stok_opname SET stok_rak = stok_rak + ? 
-                    WHERE id_barang = ?
+                $this->conn->query("
+                    UPDATE stok_opname SET stok_rak = stok_rak + {$row['qty']}
+                    WHERE id_stok_opname = {$row['id_stok_opname']}
                 ");
-                $stmtRollback->bind_param("ii", $row['qty'], $row['id_barang']);
-                $stmtRollback->execute();
             }
 
             // Hapus detail

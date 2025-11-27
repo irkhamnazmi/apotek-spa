@@ -15,13 +15,13 @@ $(document).ready(function () {
             error: () => alert("❌ Gagal mengambil data kasir!")
         },
         columns: [
-            { data: "no_struk" },                     // No Struk
-          { data: "username" },                    // Petugas
-          { data: "waktu" },                        // Waktu
-          { data: "total" },                        // Total
-          { data: "nama_jenis_pembayaran" },        // Jenis Pembayaran
-          { data: "bayar" },                        // Bayar
-          { data: "kembali" },  
+            { data: "no_struk" },
+            { data: "username" },
+            { data: "waktu" },
+            { data: "total" },
+            { data: "nama_jenis_pembayaran" },
+            { data: "bayar" },
+            { data: "kembali" },
             {
                 data: null,
                 orderable: false,
@@ -64,15 +64,7 @@ $(document).ready(function () {
     let orderList = [];
 
     function bindModalEvents() {
-
-        // Remove old events
-        $(document).off("click", "#btnTambah");
-        $(document).off("click", ".btnEdit");
-        $(document).off("click", "#btnTambahOrder");
-        $(document).off("click", "#btnSimpan");
-        $(document).off("input", "#bayar");
-        $(document).off("change", "#barangSelect");
-        $(document).off("input", "#qtyOrder");
+        $(document).off();
 
         // ===========================
         //   TAMBAH PESANAN
@@ -83,10 +75,7 @@ $(document).ready(function () {
             loadBarangStok();
             loadJenisPembayaran();
 
-          
-
-            // Set waktu default
-            $("#waktu").val(new Date().toISOString().slice(0,16));
+            $("#waktu").val(new Date().toISOString().slice(0, 16));
 
             $("#modalKasir .modal-title").text("Tambah Pesanan");
             $("#modalKasir").modal("show");
@@ -100,6 +89,7 @@ $(document).ready(function () {
 
             startProgress().then(() => {
                 $.get(`${host}/api/kasir`, { id_kasir }, function (res) {
+
                     const kasir = res.data.kasir;
                     const detail = res.data.order;
 
@@ -109,18 +99,16 @@ $(document).ready(function () {
 
                     $("#no_struk").val(kasir.no_struk);
 
-                    // Convert TIMESTAMP to datetime-local
                     const waktuLocal = kasir.waktu.replace(" ", "T").substring(0, 16);
                     $("#waktu").val(waktuLocal);
 
-                    // FIX: id_user tidak diinput manual, otomatis ambil dari session
                     $("#jenis_pembayaran").val(kasir.id_jenis_pembayaran);
                     $("#total").val(kasir.total);
                     $("#bayar").val(kasir.bayar);
                     $("#kembali").val(kasir.kembali);
 
-                    // FIX: gunakan id_barang bukan id_order
                     orderList = detail.map(item => ({
+                        id_stok_opname: item.id_stok_opname,
                         id_barang: item.id_barang,
                         nama_barang: item.nama_barang,
                         qty: item.qty,
@@ -141,18 +129,20 @@ $(document).ready(function () {
         // ===========================
         $(document).on("click", "#btnTambahOrder", function () {
             const barang = $("#barangSelect")[0];
-            const id_barang = barang.value;
+
+            const id_stok_opname = barang.value;
+            const id_barang = barang.options[barang.selectedIndex].dataset.idbarang;
             const nama_barang = barang.options[barang.selectedIndex].dataset.nama;
             const harga = parseInt(barang.options[barang.selectedIndex].dataset.harga);
 
             const qty = parseInt($("#qtyOrder").val());
             const subtotal = qty * harga;
 
-            if (!id_barang) return alert("Pilih barang!");
+            if (!id_stok_opname) return alert("Pilih barang!");
             if (qty <= 0) return alert("Qty tidak valid!");
 
-            // FIX: API pakai id_barang bukan id_order
             orderList.push({
+                id_stok_opname,
                 id_barang,
                 nama_barang,
                 qty,
@@ -169,11 +159,11 @@ $(document).ready(function () {
             hitungKembali();
         });
 
-        $(document).on("change", $("#barangSelect"), function () {
+        $(document).on("input", "#qtyOrder", function () {
             hitungJumlahHarga();
         });
 
-        $(document).on("input", "#qtyOrder", function () {
+        $(document).on("change", "#barangSelect", function () {
             hitungJumlahHarga();
         });
 
@@ -186,11 +176,10 @@ $(document).ready(function () {
             const waktuInput = $("#waktu").val();
             const waktuMySQL = waktuInput.replace("T", " ") + ":00";
 
-            // FIX: id_user dikirim ke API
             const data = {
                 id_kasir,
-                id_user: $("#id_user").val(), // FIX
-                no_struk: $("#no_struk").val(),
+                id_user: 4,
+                no_struk: $("#no_struk").val() || "",
                 waktu: waktuMySQL,
                 id_jenis_pembayaran: $("#jenis_pembayaran").val(),
                 total: parseInt($("#total").val()) || 0,
@@ -199,8 +188,7 @@ $(document).ready(function () {
                 kasir_detail: orderList
             };
 
-          console.log(data);
-          
+            console.log("DATA KIRIM:", data);
 
             startProgress().then(() => {
                 $.ajax({
@@ -213,7 +201,8 @@ $(document).ready(function () {
                         $("#modalKasir").modal("hide");
                         table.ajax.reload();
                     },
-                    error: function () {
+                    error: function (xhr) {
+                        console.log(xhr.responseText);
                         alert("❌ Gagal menyimpan data kasir!");
                     }
                 });
@@ -242,7 +231,10 @@ $(document).ready(function () {
                 });
             });
         });
-    }
+
+    } // END BIND EVENTS
+
+
 
     // ===========================
     //   TABEL ORDER
@@ -272,11 +264,13 @@ $(document).ready(function () {
         hitungKembali();
     }
 
+    // Hapus order item
     window.hapusOrder = function (i) {
         orderList.splice(i, 1);
         renderOrderTable();
     };
 
+    // Reset Order List
     function resetOrderList() {
         orderList = [];
         $("#bodyOrder").empty();
@@ -285,18 +279,14 @@ $(document).ready(function () {
         $("#kembali").val("");
     }
 
-    // ===========================
-    //   HITUNG KEMBALIAN
-    // ===========================
+    // Hitung kembalian
     function hitungKembali() {
         const total = parseFloat($("#total").val()) || 0;
         const bayar = parseFloat($("#bayar").val()) || 0;
         $("#kembali").val(bayar - total);
     }
 
-    // ===========================
-    //   HITUNG JUMLAH HARGA
-    // ===========================
+    // Hitung total harga order
     function hitungJumlahHarga() {
         const barang = $("#barangSelect")[0];
         if (!barang) return;
@@ -306,9 +296,7 @@ $(document).ready(function () {
         $("#hargaOrder").val(harga * qty);
     }
 
-    // ===========================
-    //   RESET FORM
-    // ===========================
+    // Reset form
     function resetFormKasir() {
         $("#no_struk").val("");
         $("#waktu").val("");
@@ -319,15 +307,19 @@ $(document).ready(function () {
     }
 
     // ===========================
-    //  LOAD DATA BARANG
+    //  LOAD DATA BARANG (STOK)
     // ===========================
     function loadBarangStok() {
         $.get(`${host}/api/stok_opname`, function (res) {
             let opt = `<option value="">-- Pilih Barang --</option>`;
             res.data.forEach(b => {
-                opt += `<option value="${b.id_barang}" data-nama="${b.nama_barang}" data-harga="${b.harga_jual}">
-                            ${b.nama_barang} (Stok: ${b.stok_rak})
-                        </option>`;
+                opt += `
+                    <option value="${b.id_stok_opname}"
+                        data-idbarang="${b.id_barang}"
+                        data-nama="${b.nama_barang}" 
+                        data-harga="${b.harga_jual}">
+                        ${b.nama_barang} (Stok: ${b.stok_rak})
+                    </option>`;
             });
             $("#barangSelect").html(opt);
         });
@@ -344,6 +336,37 @@ $(document).ready(function () {
             });
             $("#jenis_pembayaran").html(opt);
         });
+    }
+
+    // ===========================
+    //  PROGRESS MODAL
+    // ===========================
+    function startProgress() {
+        return new Promise((resolve) => {
+            let val = 0;
+            updateProgress(0);
+            $("#modalProgress").modal({
+                backdrop: "static",
+                keyboard: false
+            }).modal("show");
+
+            let timer = setInterval(() => {
+                val += 10;
+                updateProgress(val);
+                if (val >= 100) {
+                    clearInterval(timer);
+                    setTimeout(() => {
+                        $("#modalProgress").modal("hide");
+                        resolve();
+                    }, 300);
+                }
+            }, 150);
+        });
+    }
+
+    function updateProgress(value) {
+        $("#progressBar").css("width", value + "%");
+        $("#progressText").text(value + "%");
     }
 
 });
