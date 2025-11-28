@@ -17,17 +17,33 @@ $(document).ready(function () {
         columns: [
             { data: "no_struk" },
             { data: "username" },
-            { data: "waktu" },
-            { data: "total" },
+            {data: "waktu"},
+            { data: "total",
+
+                 render: function (data) {
+                    return formatRupiah(data);
+                }
+             },
             { data: "nama_jenis_pembayaran" },
-            { data: "bayar" },
-            { data: "kembali" },
+            {
+                data: "bayar",
+                
+                 render: function (data) {
+                    return formatRupiah(data);
+                }
+             },
+            {
+                data: "kembali",
+                 render: function (data) {
+                    return formatRupiah(data);
+                }
+             },
             {
                 data: null,
                 orderable: false,
                 render: function (row) {
                     return `
-                        <button class="btn btn-sm btn-primary btnEdit" data-id="${row.id_kasir}">Edit</button>
+                        <button class="btn btn-sm btn-primary btnDetail" data-id="${row.id_kasir}">Detail</button>
                         <button class="btn btn-sm btn-danger btnHapus" data-id="${row.id_kasir}">Hapus</button>
                     `;
                 }
@@ -58,17 +74,16 @@ $(document).ready(function () {
         }
     );
 
-    // ===========================
-    //   ORDER LIST
-    // ===========================
+    // ORDER LIST untuk frontend
     let orderList = [];
 
+    // ===========================
+    //     BIND MODAL EVENTS
+    // ===========================
     function bindModalEvents() {
         $(document).off();
 
-        // ===========================
-        //   TAMBAH PESANAN
-        // ===========================
+        // BUTTON TAMBAH
         $(document).on("click", "#btnTambah", function () {
             resetFormKasir();
             resetOrderList();
@@ -76,14 +91,11 @@ $(document).ready(function () {
             loadJenisPembayaran();
 
             $("#waktu").val(new Date().toISOString().slice(0, 16));
-
             $("#modalKasir .modal-title").text("Tambah Pesanan");
             $("#modalKasir").modal("show");
         });
 
-        // ===========================
-        //   EDIT PESANAN
-        // ===========================
+        // BUTTON EDIT
         $(document).on("click", ".btnEdit", function () {
             const id_kasir = $(this).data("id");
 
@@ -107,10 +119,11 @@ $(document).ready(function () {
                     $("#bayar").val(kasir.bayar);
                     $("#kembali").val(kasir.kembali);
 
+                    // MASUKKAN ORDER DETAIL
                     orderList = detail.map(item => ({
+                        id_kasir_detail: item.id_kasir_detail,  // untuk update
                         id_stok_opname: item.id_stok_opname,
-                        id_barang: item.id_barang,
-                        nama_barang: item.nama_barang,
+                        nama_barang: item.nama_barang,          // display saja
                         qty: item.qty,
                         subtotal: item.subtotal
                     }));
@@ -124,14 +137,13 @@ $(document).ready(function () {
             });
         });
 
-        // ===========================
-        //   TAMBAH ORDER ITEM
-        // ===========================
+        
+
+        // BUTTON TAMBAH ORDER
         $(document).on("click", "#btnTambahOrder", function () {
             const barang = $("#barangSelect")[0];
 
             const id_stok_opname = barang.value;
-            const id_barang = barang.options[barang.selectedIndex].dataset.idbarang;
             const nama_barang = barang.options[barang.selectedIndex].dataset.nama;
             const harga = parseInt(barang.options[barang.selectedIndex].dataset.harga);
 
@@ -142,8 +154,8 @@ $(document).ready(function () {
             if (qty <= 0) return alert("Qty tidak valid!");
 
             orderList.push({
+                id_kasir_detail: null,       // item baru
                 id_stok_opname,
-                id_barang,
                 nama_barang,
                 qty,
                 subtotal
@@ -152,9 +164,7 @@ $(document).ready(function () {
             renderOrderTable();
         });
 
-        // ===========================
-        //   HITUNG KEMBALIAN
-        // ===========================
+        // HITUNG KEMBALIAN
         $(document).on("input", "#bayar", function () {
             hitungKembali();
         });
@@ -168,13 +178,24 @@ $(document).ready(function () {
         });
 
         // ===========================
-        //   SIMPAN KASIR
+        //         SIMPAN
         // ===========================
         $(document).on("click", "#btnSimpan", function () {
+
             const id_kasir = $(this).attr("data-id") || "";
 
             const waktuInput = $("#waktu").val();
             const waktuMySQL = waktuInput.replace("T", " ") + ":00";
+
+            // ================================
+            //   FORMAT KASIR_DETAIL BENAR
+            // ================================
+            const kasir_detail = orderList.map(i => ({
+                id_kasir_detail: i.id_kasir_detail ?? null,
+                id_stok_opname: i.id_stok_opname,
+                qty: i.qty,
+                subtotal: i.subtotal
+            }));
 
             const data = {
                 id_kasir,
@@ -185,10 +206,10 @@ $(document).ready(function () {
                 total: parseInt($("#total").val()) || 0,
                 bayar: parseInt($("#bayar").val()) || 0,
                 kembali: parseInt($("#kembali").val()) || 0,
-                kasir_detail: orderList
+                kasir_detail
             };
 
-            console.log("DATA KIRIM:", data);
+            console.log("KIRIM:", data);
 
             startProgress().then(() => {
                 $.ajax({
@@ -209,9 +230,7 @@ $(document).ready(function () {
             });
         });
 
-        // ===========================
-        //   HAPUS DATA
-        // ===========================
+        // BUTTON HAPUS
         $("#dataTable tbody").on("click", ".btnHapus", function () {
             const id = $(this).data("id");
             if (!confirm("Yakin ingin menghapus pesanan ini?")) return;
@@ -232,12 +251,54 @@ $(document).ready(function () {
             });
         });
 
+ $(document).on("click", ".btnDetail", function () {
+     const id_kasir = $(this).data("id");
+     console.log(`Detail ID Kasir: ${id_kasir}`);
+     
+
+    $.get(`${host}/api/kasir`, { id_kasir }, function (res) {
+            if (!res.status) return alert("❌ Gagal memuat detail!");
+
+            console.log(res.data);
+            
+
+            const kasir = res.data.kasir;
+            const detail = res.data.order;
+
+            resetFormKasir();
+            resetOrderList();
+
+            // ISI HEADER READ-ONLY
+            $("#no_struk").val(kasir.no_struk).prop("readonly", true);
+            $("#waktu").val(kasir.waktu.replace(" ", "T").substring(0, 16)).prop("readonly", true);
+            $("#jenis_pembayaran").val(kasir.id_jenis_pembayaran).prop("disabled", true);
+            $("#total").val(kasir.total).prop("readonly", true);
+            $("#bayar").val(kasir.bayar).prop("readonly", true);
+            $("#kembali").val(kasir.kembali).prop("readonly", true);
+
+            // MASUKKAN ORDER DETAIL TANPA HAPUS
+            orderList = detail.map(item => ({
+                id_stok_opname: item.id_stok_opname,
+                nama_barang: item.nama_barang,
+                qty: item.qty,
+                subtotal: item.subtotal
+            }));
+
+            renderOrderTable(true); // read-only
+
+            $("#modalKasir .modal-title").text("Detail Pesanan");
+            $("#btnSimpan").hide();
+            $("#modalKasir").modal("show");
+        });
+});
+
+
     } // END BIND EVENTS
 
 
 
     // ===========================
-    //   TABEL ORDER
+    //   RENDER TABEL ORDER
     // ===========================
     function renderOrderTable() {
         let tbody = "";
@@ -264,13 +325,11 @@ $(document).ready(function () {
         hitungKembali();
     }
 
-    // Hapus order item
     window.hapusOrder = function (i) {
         orderList.splice(i, 1);
         renderOrderTable();
     };
 
-    // Reset Order List
     function resetOrderList() {
         orderList = [];
         $("#bodyOrder").empty();
@@ -279,14 +338,12 @@ $(document).ready(function () {
         $("#kembali").val("");
     }
 
-    // Hitung kembalian
     function hitungKembali() {
         const total = parseFloat($("#total").val()) || 0;
         const bayar = parseFloat($("#bayar").val()) || 0;
         $("#kembali").val(bayar - total);
     }
 
-    // Hitung total harga order
     function hitungJumlahHarga() {
         const barang = $("#barangSelect")[0];
         if (!barang) return;
@@ -296,7 +353,6 @@ $(document).ready(function () {
         $("#hargaOrder").val(harga * qty);
     }
 
-    // Reset form
     function resetFormKasir() {
         $("#no_struk").val("");
         $("#waktu").val("");
@@ -306,16 +362,12 @@ $(document).ready(function () {
         $("#btnSimpan").removeAttr("data-id");
     }
 
-    // ===========================
-    //  LOAD DATA BARANG (STOK)
-    // ===========================
     function loadBarangStok() {
         $.get(`${host}/api/stok_opname`, function (res) {
             let opt = `<option value="">-- Pilih Barang --</option>`;
             res.data.forEach(b => {
                 opt += `
                     <option value="${b.id_stok_opname}"
-                        data-idbarang="${b.id_barang}"
                         data-nama="${b.nama_barang}" 
                         data-harga="${b.harga_jual}">
                         ${b.nama_barang} (Stok: ${b.stok_rak})
@@ -325,9 +377,6 @@ $(document).ready(function () {
         });
     }
 
-    // ===========================
-    //  LOAD JENIS PEMBAYARAN
-    // ===========================
     function loadJenisPembayaran() {
         $.get(`${host}/api/jenis_pembayaran`, function (res) {
             let opt = `<option value="">-- Pilih Jenis Pembayaran --</option>`;
@@ -338,9 +387,6 @@ $(document).ready(function () {
         });
     }
 
-    // ===========================
-    //  PROGRESS MODAL
-    // ===========================
     function startProgress() {
         return new Promise((resolve) => {
             let val = 0;
@@ -368,5 +414,14 @@ $(document).ready(function () {
         $("#progressBar").css("width", value + "%");
         $("#progressText").text(value + "%");
     }
+
+     function formatRupiah(angka) {
+    if (!angka) return "Rp 0";
+    return "Rp " + Number(angka)
+        .toLocaleString("id-ID", {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        });
+}
 
 });
