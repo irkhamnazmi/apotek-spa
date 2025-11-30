@@ -16,9 +16,19 @@ class KasirController
     }
     public function show($id)
     {
-        $data = $this->model->getById($id);
-        $data ? Response::success($data) : Response::error("Kasir tidak ditemukan");
+        $kasir = $this->model->getHeaderById($id);
+        $detail = $this->model->getDetailById($id);
+
+        if (!$kasir) {
+            return Response::error("Kasir tidak ditemukan");
+        }
+
+        return Response::success([
+            "kasir" => $kasir,
+            "order" => $detail
+        ]);
     }
+
     public function store($input)
     {
         $this->model->create($input) ? Response::success([], "Kasir berhasil ditambahkan") : Response::error("Gagal menambahkan kasir");

@@ -274,4 +274,53 @@ class Kasir
             return false;
         }
     }
+
+
+    public function getHeaderById($id)
+    {
+        $stmt = $this->conn->prepare("SELECT k.*, us.nama_lengkap, jp.nama_jenis_pembayaran FROM kasir k INNER JOIN users us ON us.id_user = k.id_user INNER JOIN jenis_pembayaran jp ON jp.id_jenis_pembayaran = k.id_jenis_pembayaran WHERE id_kasir = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_assoc();
+    }
+
+    public function getDetailById($id)
+    {
+        $sql = "
+        SELECT 
+            kd.id_kasir_detail,
+            kd.id_kasir,
+            kd.id_stok_opname,
+            kd.qty,
+            kd.subtotal,
+            mb.nama_barang,
+            mb.harga_jual,
+            mb.id_barang
+        FROM kasir_detail kd
+        LEFT JOIN stok_opname so 
+            ON so.id_stok_opname = kd.id_stok_opname
+        LEFT JOIN master_barang mb 
+            ON mb.id_barang = so.id_barang
+        WHERE kd.id_kasir = ?
+        ORDER BY kd.id_stok_opname ASC
+    ";
+
+        $stmt = $this->conn->prepare($sql);
+
+        if (!$stmt) {
+            die("Prepare failed: (" . $this->conn->errno . ") " . $this->conn->error);
+        }
+
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        $detail = [];
+        while ($row = $result->fetch_assoc()) {
+            $detail[] = $row;
+        }
+
+        return $detail;
+    }
 }

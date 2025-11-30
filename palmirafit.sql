@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.2
+-- version 5.2.3
 -- https://www.phpmyadmin.net/
 --
 -- Host: mariadb
--- Generation Time: Nov 28, 2025 at 08:11 AM
--- Server version: 10.6.23-MariaDB-ubu2204
--- PHP Version: 8.2.27
+-- Generation Time: Nov 30, 2025 at 11:41 PM
+-- Server version: 10.6.24-MariaDB-ubu2204
+-- PHP Version: 8.3.26
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -66,7 +66,8 @@ CREATE TABLE `kasir` (
 
 INSERT INTO `kasir` (`id_kasir`, `no_struk`, `id_user`, `waktu`, `total`, `id_jenis_pembayaran`, `bayar`, `kembali`, `created_at`) VALUES
 (31, '0001/11/25', 4, '2025-11-28 01:28:00', 1500.00, 8, 1500.00, 0.00, '2025-11-28 01:28:50'),
-(32, '0002/11/25', 4, '2025-11-28 01:30:00', 7500.00, 8, 7500.00, 0.00, '2025-11-28 01:30:32');
+(32, '0002/11/25', 4, '2025-11-28 01:30:00', 7500.00, 8, 7500.00, 0.00, '2025-11-28 01:30:32'),
+(34, '0003/11/25', 4, '2025-11-29 14:13:00', 3000.00, 8, 3000.00, 0.00, '2025-11-29 14:14:10');
 
 -- --------------------------------------------------------
 
@@ -90,7 +91,9 @@ CREATE TABLE `kasir_detail` (
 INSERT INTO `kasir_detail` (`id_kasir_detail`, `id_kasir`, `id_stok_opname`, `qty`, `subtotal`, `created_at`) VALUES
 (5, 31, 9, 1, 1500, '2025-11-28 01:28:50'),
 (6, 32, 9, 1, 1500, '2025-11-28 01:30:32'),
-(7, 32, 10, 2, 6000, '2025-11-28 01:30:32');
+(7, 32, 10, 2, 6000, '2025-11-28 01:30:32'),
+(8, 0, 9, 1, 1500, '2025-11-29 14:13:24'),
+(9, 34, 10, 1, 3000, '2025-11-29 14:14:10');
 
 -- --------------------------------------------------------
 
@@ -188,8 +191,8 @@ CREATE TABLE `stok_opname` (
 --
 
 INSERT INTO `stok_opname` (`id_stok_opname`, `id_barang`, `id_lokasi_penyimpanan`, `stok_rak`, `kapasitas_rak`, `created_at`, `updated_at`) VALUES
-(9, 5, 1, 42, 11, '2025-11-16 00:10:37', '2025-11-28 01:30:32'),
-(10, 6, 2, 28, 50, '2025-11-16 00:10:37', '2025-11-28 01:30:32'),
+(9, 5, 1, 41, 11, '2025-11-16 00:10:37', '2025-11-29 14:13:24'),
+(10, 6, 2, 27, 50, '2025-11-16 00:10:37', '2025-11-29 14:14:10'),
 (11, 7, 3, 100, 200, '2025-11-16 00:10:37', '2025-11-16 00:10:37'),
 (13, 5, 1, 9, 10, '2025-11-23 11:56:21', '2025-11-23 14:55:22'),
 (15, 8, 3, 24, 100, '2025-11-23 11:58:24', '2025-11-23 23:41:08');
@@ -291,13 +294,13 @@ ALTER TABLE `jenis_pembayaran`
 -- AUTO_INCREMENT for table `kasir`
 --
 ALTER TABLE `kasir`
-  MODIFY `id_kasir` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `id_kasir` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT for table `kasir_detail`
 --
 ALTER TABLE `kasir_detail`
-  MODIFY `id_kasir_detail` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id_kasir_detail` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `lokasi_penyimpanan`

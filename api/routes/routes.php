@@ -114,8 +114,13 @@ elseif ($table === 'kasir_detail') {
 elseif ($table === 'kasir') {
     require_once __DIR__ . "/../controllers/KasirController.php";
     $c = new KasirController();
-    if ($method === 'GET') isset($_GET['id_kasir']) ? $c->show($_GET['id_kasir']) : $c->index();
-    elseif ($method === 'POST') $c->store(parseInput());
+    if ($method === 'GET') {
+        if (!empty($_GET['id_kasir'])) {
+            $c->show($_GET['id_kasir']);
+        } else {
+            $c->index();
+        }
+    } elseif ($method === 'POST') $c->store(parseInput());
     elseif ($method === 'PUT') $c->update(parseInput()['id_kasir'], parseInput());
     elseif ($method === 'DELETE') {
         parse_str(file_get_contents("php://input"), $input);
