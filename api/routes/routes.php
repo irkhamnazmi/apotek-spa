@@ -18,6 +18,13 @@ function parseInput()
 }
 
 // ====================== SATUAN ======================
+if ($table === 'dashboard') {
+    require_once __DIR__ . "/../controllers/DashboardController.php";
+    $c = new DashboardController();
+    if ($method === 'GET') $c->index();
+}
+
+// ====================== SATUAN ======================
 if ($table === 'satuan') {
     require_once __DIR__ . "/../controllers/SatuanController.php";
     $c = new SatuanController();
