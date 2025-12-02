@@ -9,52 +9,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 $method = $_SERVER['REQUEST_METHOD'];
 $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $uri = explode('/', trim($path, '/'));
-$table = end($uri); // ambil elemen terakhir dari URL
+
+// filter semua elemen kosong ("" atau null)
+$uri = array_values(array_filter($uri, fn($v) => $v !== ''));
+
+// ambil paling terakhir yang valid
+$table = end($uri);
+
 
 
 function parseInput()
 {
-    return json_decode(file_get_contents("php://input"), true);
+    $raw = file_get_contents("php://input");
+
+    // Jika JSON
+    if (!empty($raw)) {
+        $json = json_decode($raw, true);
+        if ($json !== null) return $json;
+    }
+
+    // Jika form-data biasa
+    return $_POST;
 }
 
 // ====================== SATUAN ======================
-if ($table === 'dashboard') {
-    require_once __DIR__ . "/../controllers/DashboardController.php";
-    $c = new DashboardController();
-    $c->index();
-}
 
-if ($table === 'auth') {
-
-    require_once __DIR__ . "/../controllers/AuthController.php";
-    $c = new AuthController();
-
-    if ($method === 'POST') {
-
-        // route: /auth/login
-        if ($action === 'login') {
-            $c->login();
-        }
-
-        // route: /auth/register
-        if ($action === 'register') {
-            $c->register();
-        }
-    }
-
-    if ($method === 'GET') {
-
-        // route: /auth/logout
-        if ($action === 'logout') {
-            $c->logout();
-        }
-
-        // route: /auth/me   (ambil data user)
-        if ($action === 'me') {
-            $c->me();
-        }
-    }
-}
 
 
 
@@ -69,7 +48,21 @@ if ($table === 'satuan') {
         parse_str(file_get_contents("php://input"), $input);
         $c->destroy($input['id_satuan']);
     }
+} elseif ($table === 'dashboard') {
+    require_once __DIR__ . "/../controllers/DashboardController.php";
+    $c = new DashboardController();
+    $c->index(parseInput());
+} elseif ($table === 'login') {
+    require_once __DIR__ . "/../controllers/LoginController.php";
+    $c = new LoginController();
+
+    if ($method === 'POST') {
+        $input = parseInput();  // JSON / form-data
+        $c->login($input);
+    }
 }
+
+
 
 // ====================== MASTER_BARANG ======================
 elseif ($table === 'master_barang') {

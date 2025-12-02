@@ -40,16 +40,8 @@ class Dashboard
         // ===============================
         // 2️⃣ DATA MASTER BARANG (harga beli, dll)
         // ===============================
-        $sqlBarang = "
-            SELECT 
-                id_barang,
-                nama_barang,
-                harga_beli
-            FROM master_barang
-            ORDER BY nama_barang ASC
-        ";
-
-        $resultBarang = $this->conn->query($sqlBarang);
+        $sqlTotal = "SELECT SUM(harga_beli) AS harga_beli FROM master_barang";
+        $resultBarang = $this->conn->query($sqlTotal);
         $barangData = [];
         while ($row = $resultBarang->fetch_assoc()) {
             $barangData[] = $row;

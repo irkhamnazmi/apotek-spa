@@ -10,14 +10,14 @@ $(document).ready(function () {
     dataType: "json",
 
     success: function (res) {
-      if (res.meta && res.meta.code === 200 && res.data.length > 0) {
+      if (res.meta.code === 200 && res.meta.status === "success") {
         const currentMonth = new Date().getMonth() + 1; // Januari = 0, jadi +1
 
         // Cari data bulan ini
         // const bulanIni = res.data.find(item => parseInt(item.bulan) === currentMonth);
 
-            $("#penjualanValue").text(formatRupiah(res.data[0]['pendapatan']));
-          $("#pembelianValue").text(formatRupiah(res.data[0]['hpp']));
+            $("#penjualanValue").text(formatRupiah(res.data.kasir[0]['pendapatan']));
+          $("#pembelianValue").text(formatRupiah(res.data.master_barang[0]['harga_beli']));
         
         // if (bulanIni) {
         //   // Update nilai di UI
