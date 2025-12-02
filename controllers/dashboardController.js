@@ -2,8 +2,7 @@ $(document).ready(function () {
 
   const host = `http://localhost:8081/palmirafit`; // Base URL API
 
-  
-$(document).ready(function () {
+
 
   $.ajax({
     url: `${host}/api/dashboard`, // endpoint API summary data
@@ -15,17 +14,20 @@ $(document).ready(function () {
         const currentMonth = new Date().getMonth() + 1; // Januari = 0, jadi +1
 
         // Cari data bulan ini
-        const bulanIni = res.data.find(item => parseInt(item.bulan) === currentMonth);
+        // const bulanIni = res.data.find(item => parseInt(item.bulan) === currentMonth);
 
-        if (bulanIni) {
-          // Update nilai di UI
-          $("#penjualanValue").text(formatRupiah(bulanIni.pendapatan));
-          $("#pembelianValue").text(formatRupiah(bulanIni.hpp));
-        } else {
-          // Jika tidak ada data bulan ini, set default 0
-          $("#penjualanValue").text("Rp 0,-");
-          $("#pembelianValue").text("Rp 0,-");
-        }
+            $("#penjualanValue").text(formatRupiah(res.data[0]['pendapatan']));
+          $("#pembelianValue").text(formatRupiah(res.data[0]['hpp']));
+        
+        // if (bulanIni) {
+        //   // Update nilai di UI
+        //   $("#penjualanValue").text(formatRupiah(bulanIni.pendapatan));
+        //   $("#pembelianValue").text(formatRupiah(bulanIni.hpp));
+        // } else {
+        //   // Jika tidak ada data bulan ini, set default 0
+        //   $("#penjualanValue").text("Rp 0,-");
+        //   $("#pembelianValue").text("Rp 0,-");
+        // }
       } else {
         alert("Gagal memuat data dashboard!");
       }
@@ -39,7 +41,6 @@ $(document).ready(function () {
     if (!angka) return "Rp 0,-";
     return "Rp " + Number(angka).toLocaleString("id-ID") + ",-";
   }
-});
 
 
 });

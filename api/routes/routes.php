@@ -21,8 +21,42 @@ function parseInput()
 if ($table === 'dashboard') {
     require_once __DIR__ . "/../controllers/DashboardController.php";
     $c = new DashboardController();
-    if ($method === 'GET') $c->index();
+    $c->index();
 }
+
+if ($table === 'auth') {
+
+    require_once __DIR__ . "/../controllers/AuthController.php";
+    $c = new AuthController();
+
+    if ($method === 'POST') {
+
+        // route: /auth/login
+        if ($action === 'login') {
+            $c->login();
+        }
+
+        // route: /auth/register
+        if ($action === 'register') {
+            $c->register();
+        }
+    }
+
+    if ($method === 'GET') {
+
+        // route: /auth/logout
+        if ($action === 'logout') {
+            $c->logout();
+        }
+
+        // route: /auth/me   (ambil data user)
+        if ($action === 'me') {
+            $c->me();
+        }
+    }
+}
+
+
 
 // ====================== SATUAN ======================
 if ($table === 'satuan') {

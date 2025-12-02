@@ -9,43 +9,58 @@ class Dashboard
         $this->conn = Database::getConnection();
     }
 
-
-
     public function getAll()
     {
-
         $year = date('Y');
-        $sql = "
-        SELECT 
-            MONTH(k.waktu) AS bulan,
 
-            -- Total pendapatan kasir
-            SUM(k.total) AS pendapatan,
+        // ===============================
+        // 1️⃣ DATA KASIR (pendapatan, hpp, laba)
+        // ===============================
+        $sqlKasir = "
+            SELECT 
+                MONTH(k.waktu) AS bulan,
+                SUM(k.total) AS pendapatan,
+                SUM(kd.qty * mb.harga_beli) AS hpp,
+                (SUM(k.total) - SUM(kd.qty * mb.harga_beli)) AS laba
+            FROM kasir k
+            LEFT JOIN kasir_detail kd ON k.id_kasir = kd.id_kasir
+            LEFT JOIN stok_opname so ON kd.id_stok_opname = so.id_stok_opname
+            LEFT JOIN master_barang mb ON so.id_barang = mb.id_barang
+            WHERE YEAR(k.waktu) = $year
+            GROUP BY MONTH(k.waktu)
+            ORDER BY bulan ASC
+        ";
 
-            -- Total modal (HPP)
-            SUM(kd.qty * mb.harga_beli) AS hpp,
-
-            -- Laba kotor
-            (SUM(k.total) - SUM(kd.qty * mb.harga_beli)) AS laba
-
-        FROM kasir k
-        LEFT JOIN kasir_detail kd ON k.id_kasir = kd.id_kasir
-        LEFT JOIN stok_opname so ON kd.id_stok_opname = so.id_stok_opname
-        LEFT JOIN master_barang mb ON so.id_barang = mb.id_barang
-
-        WHERE YEAR(k.waktu) = $year
-
-        GROUP BY MONTH(k.waktu)
-        ORDER BY bulan ASC
-    ";
-
-        $result = $this->conn->query($sql);
-
-        $data = [];
-        while ($row = $result->fetch_assoc()) {
-            $data[] = $row;
+        $resultKasir = $this->conn->query($sqlKasir);
+        $kasirData = [];
+        while ($row = $resultKasir->fetch_assoc()) {
+            $kasirData[] = $row;
         }
 
-        return $data;
+        // ===============================
+        // 2️⃣ DATA MASTER BARANG (harga beli, dll)
+        // ===============================
+        $sqlBarang = "
+            SELECT 
+                id_barang,
+                nama_barang,
+                harga_beli
+            FROM master_barang
+            ORDER BY nama_barang ASC
+        ";
+
+        $resultBarang = $this->conn->query($sqlBarang);
+        $barangData = [];
+        while ($row = $resultBarang->fetch_assoc()) {
+            $barangData[] = $row;
+        }
+
+        // ===============================
+        // 3️⃣ RETURN JSON TERBAGI 2
+        // ===============================
+        return [
+            "kasir" => $kasirData,
+            "master_barang" => $barangData
+        ];
     }
 }

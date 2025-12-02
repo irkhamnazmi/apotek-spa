@@ -1,5 +1,16 @@
 $(document).ready(function () {
 
+
+const user = localStorage.getItem("user");
+
+  // Jika belum login → pindah ke halaman login.html (terpisah)
+  if (!user) {
+    if (!window.location.pathname.endsWith("login")) {
+      window.location.href = "login";
+      return; // hentikan SPA
+    }
+  }
+
   // Default page
   let currentPage = "dashboard";
 

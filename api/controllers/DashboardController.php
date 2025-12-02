@@ -1,6 +1,6 @@
 <?php
-require_once __DIR__ . "/../config/Database.php";
-
+require_once __DIR__ . "/../models/Dashboard.php";
+require_once __DIR__ . "/../helpers/Response.php";
 class DashboardController
 {
     public $model;
@@ -8,8 +8,6 @@ class DashboardController
     {
         $this->model = new Dashboard();
     }
-
-
 
     public function index()
     {
