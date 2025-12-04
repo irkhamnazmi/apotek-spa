@@ -29,13 +29,6 @@ $(document).ready(function () {
   let currentPage = window.location.pathname.split("/").pop() || "dashboard";
 
   // ============================
-  //  LOGOUT FUNCTION
-  // ============================
- 
-
-  $(document).on("click", "#btnLogout", logout);
-
-  // ============================
   //  LOAD LAYOUT & SPA
   // ============================
   function loadLayout() {
@@ -78,7 +71,49 @@ $(document).ready(function () {
     let controllerPath = `controllers/${currentPage}Controller.js`;
     const fallbackPath = "pages/404.html";
 
-    // cek file ada atau tidak
+    // ============================
+    //  ROLE GUARD - KASIR DILARANG
+    // ============================
+    const user = JSON.parse(localStorage.getItem("user"));
+    
+   let allowPages = [];
+
+   switch (user.role) {
+    case "kasir":
+      allowPages = ["dashboard", "kasir"];
+      break;
+
+    case "admin":
+      allowPages = [
+        "dashboard",
+        "kasir",
+        "stok-opname",
+        "barang",
+        "lokasi-penyimpanan",
+        "jenis-pembayaran",
+        "satuan",
+        "pengguna"
+      ];
+      break;
+
+  }
+
+
+    if (!allowPages.includes(currentPage)) {
+      history.pushState({}, "", "dashboard");
+      currentPage = "dashboard";
+
+      $("#content").load(`pages/dashboard.html`, function () {
+        reinitTemplate();
+        loadController(`controllers/dashboardController.js`);
+        setActiveMenu();
+      });
+      return;
+    }
+
+    // ============================
+    //  CEK FILE PAGE
+    // ============================
     $.ajax({
       url: pagePath,
       type: "HEAD",
@@ -90,9 +125,7 @@ $(document).ready(function () {
         });
       },
       error: function () {
-        // file tidak ada → load 404.html
-        currentPage = "404"; // set currentPage supaya menu tidak aktif
-        pagePath = fallbackPath;
+        currentPage = "404";
         $("#content").load(fallbackPath, function () {
           reinitTemplate();
           setActiveMenu();

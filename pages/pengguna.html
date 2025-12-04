@@ -6,11 +6,23 @@
 
   <!-- DataTales Example -->
   <div class="card shadow mb-4">
-    <div class="card-header py-3 justify-content-end d-flex flex-fill">
-      <h6 class="m-0 font-weight-bold text-primary"></h6>
-      <button class="btn btn-primary btn-sm" id="btnTambah">
-        Tambah Pengguna
-      </button>
+    <div class="card-header py-3">
+      <div class="row align-items-end justify-content-end">
+        <!-- Tombol Cetak & Tambah -->
+        <div
+          class="col-12 col-md-6 d-flex justify-content-md-end justify-content-end align-items-end"
+        >
+          <button
+            class="btn btn-primary btn-sm mb-2 mb-md-0"
+            data-toggle="tooltip"
+            data-placement="top"
+            title="Tambah data stok opname"
+            id="btnTambah"
+          >
+            <i class="fa fa-plus"></i>
+          </button>
+        </div>
+      </div>
     </div>
     <div class="card-body">
       <div class="table-responsive">

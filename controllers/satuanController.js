@@ -38,10 +38,10 @@ $(document).ready(function () {
 
 
                        
-                >Edit</button>
+                ><i class="fa fa-edit"></i></button>
 
                 <button class="btn btn-sm btn-danger btnHapus" data-id="${row.id_satuan}">
-                    Hapus
+                    <i class="fa fa-trash"></i>
                 </button>
             `;
         }
@@ -88,7 +88,7 @@ $(document).ready(function () {
 
     $(document).on("click", "#btnTambah", function () {
       resetForm();
-      $("#modalSatuan .modal-title").text("Tambah Pengguna");
+      $("#modalSatuan .modal-title").text("Tambah Satuan");
       $("#modalSatuan").modal("show");
     });
 

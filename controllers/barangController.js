@@ -97,12 +97,12 @@ $(document).ready(function () {
   function bindModalEvents() {
 
     // Clear duplicate events
-    $(document).off("click", "#btnTambahBarang");
+    $(document).off("click", "#btnTambah");
     $(document).off("click", ".btnEditBarang");
     $(document).off("click", "#btnSimpanBarang");
 
     // Tambah Barang
-    $(document).on("click", "#btnTambahBarang", function () {
+    $(document).on("click", "#btnTambah", function () {
       resetForm();
       $("#modalBarang .modal-title").text("Tambah Barang");
       $("#modalBarang").modal("show");

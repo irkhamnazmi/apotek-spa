@@ -4,18 +4,69 @@
   <h1 class="h3 mb-2 text-gray-800">Barang</h1>
   <p class="mb-4"><a target="_blank" href="https://datatables.net"></a>.</p>
 
-  <!-- DataTales Example -->
+  <!-- DataTables Example -->
   <div class="card shadow mb-4">
-    <div class="card-header py-3 justify-content-end d-flex flex-fill">
-      <h6 class="m-0 font-weight-bold text-primary"></h6>
-      <button class="btn btn-primary btn-sm" id="btnTambahBarang">
-        Tambah Barang
-      </button>
+    <!-- Card Header -->
+    <div class="card-header py-3">
+      <div class="row align-items-center">
+        <!-- Dari Tanggal -->
+        <div class="col-12 col-md-6 mb-3 mb-md-0">
+          <label class="small font-weight-bold d-block mb-2"
+            >Dari Tanggal</label
+          >
+          <div class="row">
+            <div class="col-12 col-sm-6 mb-2 mb-sm-0">
+              <input
+                type="date"
+                id="tanggalAwal"
+                class="form-control"
+                placeholder="Tanggal Awal"
+              />
+            </div>
+            <div class="col-12 col-sm-6">
+              <input
+                type="date"
+                id="tanggalAkhir"
+                class="form-control"
+                placeholder="Tanggal Akhir"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Tombol Cetak & Tambah -->
+        <div
+          class="col-12 col-md-6 d-flex justify-content-md-end justify-content-start align-items-center"
+        >
+          <button
+            class="btn btn-info btn-sm mr-2 mb-2 mb-md-0"
+            data-toggle="tooltip"
+            data-placement="top"
+            title="Cetak data Barang"
+            id="btnCetak"
+          >
+            <i class="fa fa-print"></i>
+          </button>
+          <button
+            class="btn btn-primary btn-sm mb-2 mb-md-0"
+            data-toggle="tooltip"
+            data-placement="top"
+            title="Tambah data Barang"
+            id="btnTambah"
+          >
+            <i class="fa fa-plus"></i>
+          </button>
+        </div>
+      </div>
     </div>
+
+    <!-- Card Body -->
     <div class="card-body">
       <div class="table-responsive">
-        <div class="row mb-3">
-          <div class="col-md-3">
+        <!-- Filter Row -->
+        <div class="row mb-3 d-flex justify-content-between align-items-end">
+          <!-- Tampilan Item -->
+          <div class="col-12 col-md-3 mb-2 mb-md-0">
             <label class="small font-weight-bold">Tampilan Item</label>
             <select id="customLength" class="form-control">
               <option value="10">10</option>
@@ -25,10 +76,12 @@
             </select>
           </div>
 
-          <div class="col-md-5"></div>
+          <!-- Spacer -->
+          <div class="d-none d-md-block col-md-2"></div>
 
-          <div class="col-md-4">
-            <label class="small font-weight-bold"></label>
+          <!-- Cari Barang -->
+          <div class="col-12 col-md-4 mb-2 mb-md-0">
+            <label class="small font-weight-bold d-block mb-2">&nbsp;</label>
             <input
               type="text"
               id="customSearch"
@@ -37,6 +90,8 @@
             />
           </div>
         </div>
+
+        <!-- Data Table -->
         <table
           class="table table-bordered"
           id="dataTable"
@@ -52,7 +107,6 @@
               <th>Harga Beli</th>
               <th>Harga Jual</th>
               <th>Tanggal Kadaluarsa</th>
-
               <th>#</th>
             </tr>
           </thead>
@@ -63,5 +117,6 @@
   </div>
 </div>
 
+<!-- Modal Containers -->
 <div id="modalContainer"></div>
 <div id="modalProgressContainer"></div>

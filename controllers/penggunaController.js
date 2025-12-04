@@ -56,10 +56,10 @@ $(document).ready(function () {
 
 
                        
-                >Edit</button>
+                ><i class="fa fa-edit"></i></button>
 
                 <button class="btn btn-sm btn-danger btnHapus" data-id="${row.id_user}">
-                    Hapus
+                    <i class="fa fa-trash"></i>
                 </button>
             `;
         }

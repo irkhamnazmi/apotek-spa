@@ -18,9 +18,11 @@ $(document).ready(function () {
     columns: [
       { data: "kode_barang" },
       { data: "nama_barang" },
+      { data: "created_at" },
       { data: "nama_lokasi_penyimpanan" },
       { data: "stok_rak" },
       { data: "kapasitas_rak" },
+
       
     
     {
@@ -37,10 +39,10 @@ $(document).ready(function () {
                         data-stok-rak="${row.stok_rak}"
                         data-kapasitas-rak="${row.kapasitas_rak}"
                        
-                >Edit</button>
+                ><i class="fa fa-edit"></i></button>
 
                 <button class="btn btn-sm btn-danger btnHapus" data-id="${row.id_stok_opname}">
-                    Hapus
+                    <i class="fa fa-trash"></i>
                 </button>
             `;
         }

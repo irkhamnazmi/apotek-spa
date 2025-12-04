@@ -53,8 +53,8 @@ $(document).ready(function () {
                 orderable: false,
                 render: function (row) {
                     return `
-                        <button class="btn btn-sm btn-primary btnDetail" data-id="${row.id_kasir}">Detail</button>
-                        <button class="btn btn-sm btn-danger btnHapus" data-id="${row.id_kasir}">Hapus</button>
+                        <button class="btn btn-sm btn-primary btnDetail" data-id="${row.id_kasir}"><i class="fa fa-"></i></button>
+                        <button class="btn btn-sm btn-danger btnHapus" data-id="${row.id_kasir}"><i class="fa fa-trash"></i></button>
                     `;
                 }
             }

@@ -16,9 +16,10 @@ $(document).ready(function () {
         // Cari data bulan ini
         // const bulanIni = res.data.find(item => parseInt(item.bulan) === currentMonth);
 
-            $("#penjualanValue").text(formatRupiah(res.data.kasir[0]['pendapatan']));
+          $("#penjualanValue").text(formatRupiah(res.data.kasir[0]['pendapatan']));
           $("#pembelianValue").text(formatRupiah(res.data.master_barang[0]['harga_beli']));
-        
+        const user = JSON.parse(localStorage.getItem("user"));
+          user.role === "kasir" ? $('#barang').hide() : $('#barang').show();
         // if (bulanIni) {
         //   // Update nilai di UI
         //   $("#penjualanValue").text(formatRupiah(bulanIni.pendapatan));
