@@ -214,6 +214,23 @@ loadModal(
 
     });
 
+
+      $(document).on("click", "#btnPrint", function () {
+    const tglAwal = $("#tglAwal").val();
+    const tglAkhir = $("#tglAkhir").val();
+
+    if (!tglAwal || !tglAkhir) {
+        alert("Tanggal belum diisi!");
+        return;
+    }
+
+    window.open(
+        `${host}/reports/r_stokopname.html?tgl_awal=${tglAwal}&tgl_akhir=${tglAkhir}`,
+        "printPopup",
+        "width=800,height=600"
+    );
+});
+
   }
 
   // Reset form

@@ -68,10 +68,10 @@ $(document).ready(function () {
                         data-tgl-kadaluarsa="${row.tgl_kadaluarsa}"
                         data-harga-beli="${parseInt(row.harga_beli)}"
                         data-harga-jual="${parseInt(row.harga_jual)}"
-                >Edit</button>
+                > <i class="fa fa-edit"></i></button>
 
                 <button class="btn btn-sm btn-danger btnHapus" data-id="${row.id_barang}">
-                    Hapus
+                    <i class="fa fa-trash"></i>
                 </button>
             `;
         }
@@ -204,6 +204,23 @@ $(document).ready(function () {
         }
       });
     });
+
+
+      $(document).on("click", "#btnPrint", function () {
+    const tglAwal = $("#tglAwal").val();
+    const tglAkhir = $("#tglAkhir").val();
+
+    if (!tglAwal || !tglAkhir) {
+        alert("Tanggal belum diisi!");
+        return;
+    }
+
+    window.open(
+        `${host}/reports/r_barang.html?tgl_awal=${tglAwal}&tgl_akhir=${tglAkhir}`,
+        "printPopup",
+        "width=800,height=600"
+    );
+});
 
   }
 

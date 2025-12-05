@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Apotek Palmirafit - Laporan Master Barang</title>
+
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 40px;
+        background: #f4f4f9;
+      }
+
+      .container {
+        background: #fff;
+        padding: 25px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      header {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      header h1 {
+        margin: 0;
+        font-size: 28px;
+      }
+
+      header h3 {
+        margin: 5px 0;
+        font-size: 18px;
+        font-weight: normal;
+      }
+
+      header p {
+        font-size: 14px;
+        color: #555;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+      }
+
+      table th,
+      table td {
+        border: 1px solid #ccc;
+        padding: 10px 8px;
+        font-size: 14px;
+      }
+
+      table th {
+        background: #efefef;
+      }
+
+      tr:nth-child(even) {
+        background: #fafafa;
+      }
+
+      /* Tombol Print */
+      #btnPrint {
+        margin-bottom: 15px;
+        padding: 10px 16px;
+        background: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      #btnPrint:hover {
+        background: #0056b3;
+      }
+
+      /* Saat dicetak */
+      @media print {
+        body {
+          background: white;
+          margin: 0;
+        }
+        #btnPrint {
+          display: none !important; /* ➜ sembunyikan tombol saat print */
+        }
+        .container {
+          box-shadow: none;
+        }
+      }
+    </style>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  </head>
+
+  <body>
+    <div class="container">
+      <header>
+        <h1>APOTEK PALMIRAFIT</h1>
+        <h3>Laporan Stok Opname</h3>
+        <p>Dicetak pada: <span id="dateTime"></span></p>
+      </header>
+
+      <!-- ➜ Tombol CETAK -->
+      <button id="btnPrint">🖨 Cetak Barang</button>
+
+      <table id="dataTable">
+        <thead>
+          <tr>
+            <th>Kode Barang</th>
+            <th>Nama Barang</th>
+            <th>Satuan</th>
+            <th>Lokasi Penyimpanan</th>
+            <th>Stok Minimum</th>
+            <th>Stok Saat Ini</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <script>
+      // Tampilkan tanggal cetak
+      const now = new Date();
+      $("#dateTime").text(now.toLocaleString("id-ID"));
+
+      const params = new URLSearchParams(window.location.search);
+      const startDate = params.get("tgl_awal");
+      const endDate = params.get("tgl_akhir");
+
+      // Fungsi load data berdasarkan tanggal
+      function getDataByDateRange(startDate, endDate) {
+        $.ajax({
+          url: "http://localhost:8081/palmirafit/api/stok_opname",
+          type: "GET",
+          data: {
+            tanggal_awal: startDate,
+            tanggal_akhir: endDate,
+          },
+          dataType: "json",
+          success: function (response) {
+            if (
+              response.meta.status === "success" &&
+              response.data.length > 0
+            ) {
+              let tableRows = "";
+
+              response.data.forEach((item) => {
+                tableRows += `
+                  <tr>
+                    <td>${item.kode_barang}</td>
+                    <td>${item.nama_barang}</td>
+                    <td>${item.nama_satuan}</td>
+                    <td>${item.nama_lokasi_penyimpanan}</td>
+                    <td>${item.stok_minimum}</td>
+                    <td>${item.stok_rak}</td>
+                  </tr>
+                `;
+              });
+
+              $("#dataTable tbody").html(tableRows);
+
+              // ➜ Otomatis print setelah data masuk
+              setTimeout(() => {
+                window.print();
+              }, 400);
+            } else {
+              $("#dataTable tbody").html(
+                '<tr><td colspan="6" style="text-align:center;">Tidak ada data</td></tr>'
+              );
+              setTimeout(() => window.print(), 400);
+            }
+          },
+          error: function () {
+            $("#dataTable tbody").html(
+              '<tr><td colspan="6" style="text-align:center;">Terjadi kesalahan memuat data</td></tr>'
+            );
+            setTimeout(() => window.print(), 400);
+          },
+        });
+      }
+
+      // Load data pertama kali
+      getDataByDateRange(startDate, endDate);
+
+      // ➜ Tombol print manual
+      $("#btnPrint").on("click", function () {
+        window.print();
+      });
+    </script>
+  </body>
+</html>

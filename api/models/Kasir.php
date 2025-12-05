@@ -59,9 +59,30 @@ class Kasir
         return $data;
     }
 
-    // ==================================================
-    // GET BY ID
-    // ==================================================
+
+    public function getKasirByDateRange($awal, $akhir)
+    {
+        $sql = "SELECT a.*, us.username, jp.nama_jenis_pembayaran
+            FROM kasir a
+            LEFT JOIN users us ON us.id_user = a.id_user
+            LEFT JOIN jenis_pembayaran jp ON jp.id_jenis_pembayaran = a.id_jenis_pembayaran
+            WHERE DATE(a.waktu) BETWEEN ? AND ?
+            ORDER BY a.id_kasir DESC";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("ss", $awal, $akhir);
+        $stmt->execute();
+
+        $res = $stmt->get_result();
+        $data = [];
+
+        while ($row = $res->fetch_assoc()) {
+            $data[] = $row;
+        }
+
+        return $data;
+    }
+
 
 
     public function getById($id)

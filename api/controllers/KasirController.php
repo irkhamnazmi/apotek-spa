@@ -29,6 +29,37 @@ class KasirController
         ]);
     }
 
+    public function showByDateRange()
+    {
+        $tgl_awal = $_GET['tgl_awal'] ?? null;
+        $tgl_akhir = $_GET['tgl_akhir'] ?? null;
+
+        if (!$tgl_awal || !$tgl_akhir) {
+            return Response::error("Tanggal awal dan akhir wajib diisi");
+        }
+
+        $kasirList = $this->model->getKasirByDateRange($tgl_awal, $tgl_akhir);
+
+        if (!$kasirList || count($kasirList) === 0) {
+            return Response::error("Tidak ada data kasir pada tanggal tersebut");
+        }
+
+        // Ambil detail setiap kasir
+        $result = [];
+
+        foreach ($kasirList as $kasir) {
+            $detail = $this->model->getDetailById($kasir["id_kasir"]);
+
+            $result[] = [
+                "kasir" => $kasir,
+                "order" => $detail
+            ];
+        }
+
+        return Response::success($result);
+    }
+
+
     public function store($input)
     {
         $this->model->create($input) ? Response::success([], "Kasir berhasil ditambahkan") : Response::error("Gagal menambahkan kasir");

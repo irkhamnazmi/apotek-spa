@@ -120,8 +120,18 @@ elseif ($table === 'lokasi_penyimpanan') {
 elseif ($table === 'stok_opname') {
     require_once __DIR__ . "/../controllers/StokOpnameController.php";
     $c = new StokOpnameController();
-    if ($method === 'GET') isset($_GET['id_stok_opname']) ? $c->show($_GET['id_stok_opname']) : $c->index();
-    elseif ($method === 'POST') $c->store(parseInput());
+    if ($method === 'GET') {
+        if (isset($_GET['startDate']) && isset($_GET['endDate'])) {
+            // Jika ada, panggil fungsi untuk menampilkan laporan berdasarkan rentang tanggal
+            $startDate = $_GET['startDate'];
+            $endDate = $_GET['endDate'];
+            $c->showByDateRange($startDate, $endDate);  // Fungsi untuk menampilkan data berdasarkan tanggal
+        } elseif (isset($_GET['id_stok_opname'])) {
+            $c->show($_GET['id_stok_opname']);
+        } else {
+            $c->index();
+        }
+    } elseif ($method === 'POST') $c->store(parseInput());
     elseif ($method === 'PUT') $c->update(parseInput()['id_stok_opname'], parseInput());
     elseif ($method === 'DELETE') {
         parse_str(file_get_contents("php://input"), $input);
@@ -149,6 +159,12 @@ elseif ($table === 'kasir') {
     require_once __DIR__ . "/../controllers/KasirController.php";
     $c = new KasirController();
     if ($method === 'GET') {
+        if (isset($_GET['tgl_awal']) && isset($_GET['tgl_akhir'])) {
+            // Jika ada, panggil fungsi untuk menampilkan laporan berdasarkan rentang tanggal
+            $tglAwal = $_GET['tgl_awal'];
+            $tglAkhir = $_GET['tgl_akhir'];
+            $c->showByDateRange($tglAwal, $tglAkhir);  // Fungsi untuk menampilkan data berdasarkan tanggal
+        }
         if (!empty($_GET['id_kasir'])) {
             $c->show($_GET['id_kasir']);
         } else {

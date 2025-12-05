@@ -53,7 +53,7 @@ $(document).ready(function () {
                 orderable: false,
                 render: function (row) {
                     return `
-                        <button class="btn btn-sm btn-primary btnDetail" data-id="${row.id_kasir}"><i class="fa fa-"></i></button>
+                        <button class="btn btn-sm btn-primary btnDetail" data-id="${row.id_kasir}"><i class="fa fa-info-circle"></i></button>
                         <button class="btn btn-sm btn-danger btnHapus" data-id="${row.id_kasir}"><i class="fa fa-trash"></i></button>
                     `;
                 }
@@ -95,12 +95,14 @@ $(document).ready(function () {
             $("#waktu").val(new Date().toISOString().slice(0, 16));
             $("#modalKasir .modal-title").text("Tambah Pesanan");
             $("#modalKasir").modal("show");
+            $("#btnPrintStruk").hide();
+
         });
 
         // BUTTON EDIT
         $(document).on("click", ".btnEdit", function () {
             const id_kasir = $(this).data("id");
-
+            
             startProgress().then(() => {
                 $.get(`${host}/api/kasir`, { id_kasir }, function (res) {
 
@@ -253,13 +255,15 @@ $(document).ready(function () {
             });
         });
 
+
+
  $(document).on("click", ".btnDetail", function () {
      const id_kasir = $(this).data("id");
      console.log(`Detail ID Kasir: ${id_kasir}`);
-     
+      $("#btnPrintStruk").show();
 
     $.get(`${host}/api/kasir`, { id_kasir }, function (res) {
-            if (!res.status) return alert("❌ Gagal memuat detail!");
+            if (!res.meta.status) return alert("❌ Gagal memuat detail!");
 
             console.log(res.data);
             
@@ -291,8 +295,35 @@ $(document).ready(function () {
             $("#modalKasir .modal-title").text("Detail Pesanan");
             $("#btnSimpan").hide();
             $("#modalKasir").modal("show");
+            $("#btnPrintStruk").data("id", id_kasir);
         });
+ });
+        
+      $(document).on("click", "#btnPrint", function () {
+    const tglAwal = $("#tglAwal").val();
+    const tglAkhir = $("#tglAkhir").val();
+
+    if (!tglAwal || !tglAkhir) {
+        alert("Tanggal belum diisi!");
+        return;
+    }
+
+    window.open(
+        `${host}/reports/r_kasir.html?tgl_awal=${tglAwal}&tgl_akhir=${tglAkhir}`,
+        "printPopup",
+        "width=800,height=600"
+    );
 });
+
+
+           $(document).on("click", "#btnPrintStruk", function () {
+            const id_kasir = $(this).data("id");
+                    window.open(
+            `${host}/reports/struk.html?id_kasir=${id_kasir}`,
+            "printPopup",
+            "width=800,height=600"
+            );
+        });
 
 
     } // END BIND EVENTS
