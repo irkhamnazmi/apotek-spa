@@ -140,9 +140,8 @@
         <button id="close-btn">Tutup</button>
       </div>
     </div>
-
+    <script src="../js/config.js"></script>
     <script>
-      const host = `http://localhost:8081/palmirafit`;
       function getQueryParam(key) {
         const url = new URL(window.location.href);
         return url.searchParams.get(key);
@@ -214,6 +213,7 @@
 
             <div class="divider"></div>
             <div class="text-center">TERIMA KASIH</div>
+             <div class="text-center">Petugas : ${kasir.nama_lengkap}</div>
           `;
 
           $(".content-container").html(html);

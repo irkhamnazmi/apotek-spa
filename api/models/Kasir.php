@@ -96,10 +96,14 @@ class Kasir
             kd.subtotal,
             so.nama_barang,
             so.harga_jual,
-            so.id_barang
+            so.id_barang,
+            us.nik,
+            us.nama_lengkap
         FROM kasir_detail kd
         LEFT JOIN stok_opname so 
             ON so.id_stok_opname = kd.id_stok_opname
+        LEFT JOIN users us 
+            ON so.id_user = kd.id_user
         WHERE kd.id_kasir = ?
         ORDER BY kd.id_stok_opname ASC
     ");

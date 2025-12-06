@@ -117,7 +117,7 @@
         <tbody></tbody>
       </table>
     </div>
-
+    <script src="../js/config.js"></script>
     <script>
       // Tampilkan tanggal cetak
       const now = new Date();
@@ -130,7 +130,7 @@
       // Fungsi load data berdasarkan tanggal
       function getDataByDateRange(startDate, endDate) {
         $.ajax({
-          url: "http://localhost:8081/palmirafit/api/stok_opname",
+          url: `${host}/api/stok_opname`,
           type: "GET",
           data: {
             tanggal_awal: startDate,

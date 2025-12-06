@@ -1,9 +1,7 @@
 // Pastikan jQuery sudah di-load sebelum script ini
-const host = "http://localhost:8081/palmirafit";
-
 $("#loginForm").submit(function (e) {
   e.preventDefault();
-
+  
   const email = $("#exampleInputEmail").val();
   const password = $("#exampleInputPassword").val();
 
@@ -23,6 +21,9 @@ $("#loginForm").submit(function (e) {
         alert(res.meta?.message || "Login gagal");
         return;
       }
+
+      console.log('hha');
+      
 
       const user = res.data.user;
       localStorage.setItem("user", JSON.stringify(user));

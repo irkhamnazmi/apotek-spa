@@ -1,6 +1,5 @@
 $(document).ready(function () {
 
-    const host = `http://localhost:8081/palmirafit`;
 
  loadModal(
         "#modalContainer",

@@ -1,5 +1,4 @@
 $(document).ready(function () {
-  const host = `http://localhost:8081/palmirafit`;
 
   // ============================
   //  AUTH & ROLE GUARD
@@ -34,7 +33,9 @@ $(document).ready(function () {
   function loadLayout() {
     $("#navbar").load("layout/navbar.html");
     $("#accordionSidebar").load("layout/sidebar.html", function () {
+
       const currentUser = JSON.parse(localStorage.getItem("user"));
+      $('#fullname').text(currentUser.nama_lengkap);
       if (currentUser.role === "kasir") {
         $('#master').hide();
         $('#persediaan').hide();
