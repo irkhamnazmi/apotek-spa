@@ -40,6 +40,9 @@ $(document).ready(function () {
         $('#master').hide();
         $('#persediaan').hide();
       }
+        if (currentUser.role === "apoteker") {
+        $('#master').hide();
+      }
       bindRouting();
       loadPage();
     });
@@ -82,6 +85,10 @@ $(document).ready(function () {
    switch (user.role) {
     case "kasir":
       allowPages = ["dashboard", "kasir"];
+      break;
+
+     case "apoteker":
+      allowPages = ["dashboard", "kasir", "stok-opname"];
       break;
 
     case "admin":

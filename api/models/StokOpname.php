@@ -12,7 +12,10 @@ class StokOpname
     public function getAll()
     {
         $data = [];
-        $res = $this->conn->query("SELECT so.*, mb.*, lp.*, sa.* FROM stok_opname so inner join master_barang mb on so.id_barang=mb.id_barang inner join lokasi_penyimpanan lp on so.id_lokasi_penyimpanan=lp.id_lokasi_penyimpanan inner join satuan sa on sa.id_satuan=mb.id_satuan");
+        $res = $this->conn->query("SELECT so.*, mb.*, lp.*, sa.*
+         FROM stok_opname so inner join master_barang mb on so.id_barang=mb.id_barang
+          inner join lokasi_penyimpanan lp on so.id_lokasi_penyimpanan=lp.id_lokasi_penyimpanan
+        inner join satuan sa on sa.id_satuan=mb.id_satuan");
         while ($row = $res->fetch_assoc()) $data[] = $row;
         return $data;
     }
@@ -35,9 +38,9 @@ class StokOpname
         FROM stok_opname so
         INNER JOIN master_barang mb ON so.id_barang = mb.id_barang
         INNER JOIN lokasi_penyimpanan lp ON so.id_lokasi_penyimpanan = lp.id_lokasi_penyimpanan
-        INNER JOIN satuan sa ON so.id_satuan = sa.id_satuan
+        INNER JOIN satuan sa ON mb.id_satuan = sa.id_satuan
 
-        WHERE so.tanggal_opname BETWEEN '$startDate' AND '$endDate'
+        WHERE so.created_at BETWEEN '$startDate.00:00:00' AND '$endDate.23:59:59'
     ";
 
         $res = $this->conn->query($query);

@@ -6,3 +6,4 @@ RewriteCond %{REQUEST_FILENAME} !-d
 
 # Semua request lain diarahkan ke index.php
 RewriteRule ^.*$ index.php [QSA,L]
+

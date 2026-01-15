@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Apotek Palmirafit - Laporan Master Barang</title>
+    <title>Apotek Palmirafit - Laporan Stok Opname</title>
 
     <style>
       body {
@@ -89,7 +89,7 @@
       }
     </style>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="../vendor/jquery/jquery.min.js"></script>
   </head>
 
   <body>
@@ -101,7 +101,9 @@
       </header>
 
       <!-- ➜ Tombol CETAK -->
-      <button id="btnPrint">🖨 Cetak Barang</button>
+      <button id="btnPrint">
+        🖨 Cetak Stok <i class="icon-open-share-simple"></i>
+      </button>
 
       <table id="dataTable">
         <thead>
@@ -133,15 +135,14 @@
           url: `${host}/api/stok_opname`,
           type: "GET",
           data: {
-            tanggal_awal: startDate,
-            tanggal_akhir: endDate,
+            start_date: startDate,
+            end_date: endDate,
           },
           dataType: "json",
           success: function (response) {
-            if (
-              response.meta.status === "success" &&
-              response.data.length > 0
-            ) {
+            console.log(response.meta);
+
+            if (response.meta.status === "success") {
               let tableRows = "";
 
               response.data.forEach((item) => {
@@ -149,10 +150,10 @@
                   <tr>
                     <td>${item.kode_barang}</td>
                     <td>${item.nama_barang}</td>
-                    <td>${item.nama_satuan}</td>
-                    <td>${item.nama_lokasi_penyimpanan}</td>
+                    <td>${item.created_at}</td>
                     <td>${item.stok_minimum}</td>
-                    <td>${item.stok_rak}</td>
+                    <td>${item.stok_barang}</td>
+                    <td>${item.tgl_kadaluarsa}</td>
                   </tr>
                 `;
               });
@@ -172,7 +173,7 @@
           },
           error: function () {
             $("#dataTable tbody").html(
-              '<tr><td colspan="6" style="text-align:center;">Terjadi kesalahan memuat data</td></tr>'
+              '<tr><td colspan="6" style="text-align:center;">Data tidak ditemukan</td></tr>'
             );
             setTimeout(() => window.print(), 400);
           },

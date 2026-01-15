@@ -78,11 +78,16 @@ $(document).ready(function () {
     // ORDER LIST untuk frontend
     let orderList = [];
 
+     let intervalWaktu;
+
     // ===========================
     //     BIND MODAL EVENTS
     // ===========================
     function bindModalEvents() {
-       $(document).off(".kasir");
+        $(document).off(".kasir");
+       
+        intervalWaktu = setInterval(updateWaktu, 1000);
+        updateWaktu();
 
         // BUTTON TAMBAH
         $(document).on("click", "#btnTambah", function () {
@@ -100,13 +105,17 @@ $(document).ready(function () {
 
         // BUTTON EDIT
         $(document).on("click", ".btnEdit", function () {
+            resetFormKasir();
             const id_kasir = $(this).data("id");
+
             
             startProgress().then(() => {
                 $.get(`${host}/api/kasir`, { id_kasir }, function (res) {
 
                     const kasir = res.data.kasir;
                     const detail = res.data.order;
+                    clearInterval(intervalWaktu);
+
 
                     resetOrderList();
                     loadBarangStok();
@@ -259,7 +268,12 @@ $(document).ready(function () {
  $(document).on("click", ".btnDetail", function () {
      const id_kasir = $(this).data("id");
      console.log(`Detail ID Kasir: ${id_kasir}`);
-      $("#btnPrintStruk").show();
+     $("#btnPrintStruk").show();
+     $("#orderList").hide();
+     renderOrderTable(true); // read-only
+     
+
+
 
     $.get(`${host}/api/kasir`, { id_kasir }, function (res) {
             if (!res.meta.status) return alert("❌ Gagal memuat detail!");
@@ -308,7 +322,7 @@ $(document).ready(function () {
     }
 
     window.open(
-        `${host}/reports/r_kasir.html?tgl_awal=${tglAwal}&tgl_akhir=${tglAkhir}`,
+        `${host}/reports/r_kasir.html?tgl_awal=${tglAwal}&tgl_akhir=${tglAkhir}&nocache=${Math.random()}`,
         "printPopup",
         "width=800,height=600"
     );
@@ -318,7 +332,7 @@ $(document).ready(function () {
            $(document).on("click", "#btnPrintStruk", function () {
             const id_kasir = $(this).data("id");
                     window.open(
-            `${host}/reports/struk.html?id_kasir=${id_kasir}`,
+            `${host}/reports/struk.html?id_kasir=${id_kasir}&nocache=${Math.random()}`,
             "printPopup",
             "width=800,height=600"
             );
@@ -329,25 +343,42 @@ $(document).ready(function () {
 
 
 
-    function renderOrderTable() {
-        let tbody = "";
+    function renderOrderTable(state) {
         let total = 0;
 
-        orderList.forEach((item, i) => {
-            total += parseInt(item.subtotal);
+       let tbody = "";
+        
+if (orderList.length === 0 ) {
+    tbody = `
+        <tr>
+            <td colspan="5" class="text-center">
+                <em>Data belum diinput</em>
+            </td>
+        </tr>
+    `;
+    
+} else {
+    orderList.forEach((item, i) => {
+        tbody += `
+            <tr>
+                <td>${i + 1}</td>
+                <td>${item.nama_barang}</td>
+                <td>${item.qty}</td>
+                <td>${item.subtotal}</td>
+                ${state == true ? `<td></td>` : `
+                <td>
+                    <button class="btn btn-sm btn-danger" onclick="hapusOrder(${i})">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                </td>
+                `}
+            </tr>
+        `;
+    });
+}
 
-            tbody += `
-                <tr>
-                    <td>${i + 1}</td>
-                    <td>${item.nama_barang}</td>
-                    <td>${item.qty}</td>
-                    <td>${item.subtotal}</td>
-                    <td>
-                        <button class="btn btn-danger btn-sm" onclick="hapusOrder(${i})">Hapus</button>
-                    </td>
-                </tr>
-            `;
-        });
+// render ke tabel
+
 
         $("#bodyOrder").html(tbody);
         $("#total").val(total);
@@ -356,7 +387,7 @@ $(document).ready(function () {
 
     window.hapusOrder = function (i) {
         orderList.splice(i, 1);
-        renderOrderTable();
+        renderOrderTable(false);
     };
 
     function resetOrderList() {
@@ -383,28 +414,43 @@ $(document).ready(function () {
     }
 
     function resetFormKasir() {
+        clearInterval(intervalWaktu);
+        orderList = [];
         $("#no_struk").val("");
         $("#waktu").val("");
+        $("#waktu").prop("readonly", false);
+        $("#orderList").show();
+        renderOrderTable(false);
         $("#jenis_pembayaran").val("");
+        $("#jenis_pembayaran").val("").prop("disabled", false);
         $("#bayar").val("");
         $("#kembali").val("");
+
         $("#btnSimpan").removeAttr("data-id");
     }
 
     function loadBarangStok() {
-        $.get(`${host}/api/stok_opname`, function (res) {
-            let opt = `<option value="">-- Pilih Barang --</option>`;
-            res.data.forEach(b => {
-                opt += `
-                    <option value="${b.id_stok_opname}"
-                        data-nama="${b.nama_barang}" 
-                        data-harga="${b.harga_jual}">
-                        ${b.nama_barang} (Stok: ${b.stok_rak})
-                    </option>`;
-            });
-            $("#barangSelect").html(opt);
+    $.get(`${host}/api/stok_opname`, function (res) {
+        let opt = `<option value="">-- Pilih Barang --</option>`;
+        res.data.forEach(b => {
+            opt += `
+                <option value="${b.id_stok_opname}"
+                    data-nama="${b.nama_barang}" 
+                    data-harga="${b.harga_jual}">
+                    ${b.nama_barang} (Stok: ${b.stok_rak})
+                </option>`;
         });
-    }
+        $("#barangSelect").html(opt);
+
+        // Init Select2 untuk searchable
+        $("#barangSelect").select2({
+            theme: "bootstrap4",
+            placeholder: "-- Pilih Barang --",
+            allowClear: true
+        });
+    });
+}
+
 
     function loadJenisPembayaran() {
         $.get(`${host}/api/jenis_pembayaran`, function (res) {
@@ -451,6 +497,22 @@ $(document).ready(function () {
             minimumFractionDigits: 0,
             maximumFractionDigits: 0
         });
+     }
+    
+    function updateWaktu() {
+    let now = new Date();
+
+    let tahun  = now.getFullYear();
+    let bulan  = String(now.getMonth() + 1).padStart(2, '0');
+    let tanggal= String(now.getDate()).padStart(2, '0');
+    let jam    = String(now.getHours()).padStart(2, '0');
+    let menit  = String(now.getMinutes()).padStart(2, '0');
+    let detik  = String(now.getSeconds()).padStart(2, '0');
+
+    // format wajib untuk datetime-local
+    let value = `${tahun}-${bulan}-${tanggal}T${jam}:${menit}:${detik}`;
+    $("#waktu").val(value);
 }
+
 
 });

@@ -27,7 +27,7 @@ $(document).ready(function () {
     columns: [
     { data: "kode_barang" },
     { data: "nama_barang" },
-
+   { data: "created_at" },
     { 
         data: "stok_barang",
         render: data => parseInt(data)
@@ -50,6 +50,7 @@ $(document).ready(function () {
         }
     },
 
+   
     { data: "tgl_kadaluarsa" },
     
     {
@@ -215,7 +216,7 @@ $(document).ready(function () {
     }
 
     window.open(
-        `${host}/reports/r_barang.html?tgl_awal=${tglAwal}&tgl_akhir=${tglAkhir}`,
+        `${host}/reports/r_barang.html?tgl_awal=${tglAwal}&tgl_akhir=${tglAkhir}&nocache=${Math.random()}`,
         "printPopup",
         "width=800,height=600"
     );

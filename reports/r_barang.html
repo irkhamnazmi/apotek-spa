@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Apotek Palmirafit - Laporan Penjualan</title>
+    <title>Apotek Palmirafit - Laporan Master Barang</title>
 
     <style>
       body {
@@ -96,20 +96,20 @@
     <div class="container">
       <header>
         <h1>APOTEK PALMIRAFIT</h1>
-        <h3>Laporan Penjualan</h3>
+        <h3>Laporan Master Barang</h3>
         <p>Dicetak pada: <span id="dateTime"></span></p>
       </header>
 
       <!-- ➜ Tombol CETAK -->
-      <button id="btnPrint">🖨 Cetak Laporan</button>
+      <button id="btnPrint">🖨 Cetak Barang</button>
 
       <table id="dataTable">
         <thead>
           <tr>
+            <th>Tanggal</th>
             <th>Kode Barang</th>
             <th>Nama Barang</th>
             <th>Satuan</th>
-            <th>Lokasi Penyimpanan</th>
             <th>Stok Minimum</th>
             <th>Stok Saat Ini</th>
           </tr>
@@ -118,7 +118,6 @@
       </table>
     </div>
     <script src="../js/config.js"></script>
-
     <script>
       // Tampilkan tanggal cetak
       const now = new Date();
@@ -131,7 +130,7 @@
       // Fungsi load data berdasarkan tanggal
       function getDataByDateRange(startDate, endDate) {
         $.ajax({
-          url: `${host}/api/kasir`,
+          url: `${host}/api/master_barang`,
           type: "GET",
           data: {
             start_date: startDate,
@@ -139,18 +138,20 @@
           },
           dataType: "json",
           success: function (response) {
+            console.log(response.meta);
+
             if (response.meta.status === "success") {
               let tableRows = "";
 
               response.data.forEach((item) => {
                 tableRows += `
                   <tr>
-                    <td>${item.no_struk}</td>
-                    <td>${item.nama_lengkap}</td>
-                    <td>${item.waktu}</td>
-                    <td>${item.total}</td>
-                    <td>${item.nama_jenis_pembayaran}</td>
-                    <td>${item.bayar}</td>
+                    <td>${item.created_at}</td>
+                    <td>${item.kode_barang}</td>
+                    <td>${item.nama_barang}</td>
+                    <td>${item.nama_satuan}</td>
+                    <td>${item.stok_minimum}</td>
+                    <td>${item.stok_barang}</td>
                   </tr>
                 `;
               });
@@ -163,14 +164,14 @@
               }, 400);
             } else {
               $("#dataTable tbody").html(
-                '<tr><td colspan="6" style="text-align:center;">Tidak ada data</td></tr>'
+                '<tr><td colspan="6" style="text-align:center;">Data tidak ditemukan</td></tr>'
               );
               setTimeout(() => window.print(), 400);
             }
           },
           error: function () {
             $("#dataTable tbody").html(
-              '<tr><td colspan="6" style="text-align:center;">Terjadi kesalahan memuat data</td></tr>'
+              '<tr><td colspan="6" style="text-align:center;">Data tidak ditemukan</td></tr>'
             );
             setTimeout(() => window.print(), 400);
           },

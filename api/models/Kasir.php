@@ -70,7 +70,7 @@ class Kasir
             ORDER BY a.id_kasir DESC";
 
         $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("ss", $awal, $akhir);
+        $stmt->bind_param("ss", $awal . " 00:00:00", $akhir . " 23:59:59");
         $stmt->execute();
 
         $res = $stmt->get_result();

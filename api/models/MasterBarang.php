@@ -51,6 +51,29 @@ class MasterBarang
         return "OB" . str_pad($newNumber, 3, "0", STR_PAD_LEFT);
     }
 
+
+    public function getByDateRange($startDate, $endDate)
+    {
+        // Pastikan format tanggal sesuai dengan format MySQL (YYYY-MM-DD)
+        $startDate = $this->conn->real_escape_string($startDate);
+        $endDate = $this->conn->real_escape_string($endDate);
+        // Query untuk mendapatkan data berdasarkan rentang tanggal
+        $query = "SELECT  mb.*, sa.* FROM master_barang mb
+        INNER JOIN satuan sa ON mb.id_satuan = sa.id_satuan
+
+       WHERE mb.created_at BETWEEN '$startDate.00:00:00' AND '$endDate.23:59:59'";
+
+        $res = $this->conn->query($query);
+
+        // Mengembalikan semua data yang ditemukan
+        $data = [];
+        while ($row = $res->fetch_assoc()) {
+            $data[] = $row;
+        }
+
+        return $data;
+    }
+
     public function create($d)
     {
         // Jika kode_barang kosong, generate otomatis

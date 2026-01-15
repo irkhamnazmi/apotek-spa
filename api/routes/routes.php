@@ -68,7 +68,19 @@ if ($table === 'satuan') {
 elseif ($table === 'master_barang') {
     require_once __DIR__ . "/../controllers/MasterBarangController.php";
     $c = new MasterBarangController();
-    if ($method === 'GET') isset($_GET['id_barang']) ? $c->show($_GET['id_barang']) : $c->index();
+    if ($method === 'GET')
+        if (isset($_GET['start_date'], $_GET['end_date'])) {
+
+            $start_date = $_GET['start_date'];
+            $end_date   = $_GET['end_date'];
+
+
+            $c->showByDateRange($start_date, $end_date);
+        } elseif (isset($_GET['id_barang'])) {
+            $c->show($_GET['id_barang']);
+        } else {
+            $c->index();
+        }
     elseif ($method === 'POST') $c->store(parseInput());
     elseif ($method === 'PUT') $c->update(parseInput()['id_barang'], parseInput());
     elseif ($method === 'DELETE') {
@@ -120,12 +132,19 @@ elseif ($table === 'lokasi_penyimpanan') {
 elseif ($table === 'stok_opname') {
     require_once __DIR__ . "/../controllers/StokOpnameController.php";
     $c = new StokOpnameController();
+
+
     if ($method === 'GET') {
-        if (isset($_GET['startDate']) && isset($_GET['endDate'])) {
-            // Jika ada, panggil fungsi untuk menampilkan laporan berdasarkan rentang tanggal
-            $startDate = $_GET['startDate'];
-            $endDate = $_GET['endDate'];
-            $c->showByDateRange($startDate, $endDate);  // Fungsi untuk menampilkan data berdasarkan tanggal
+        if (isset($_GET['start_date'], $_GET['end_date'])) {
+
+            $start_date = $_GET['start_date'];
+            $end_date   = $_GET['end_date'];
+
+            // Pastikan data tampil di log
+
+
+            // Panggil fungsi
+            $c->showByDateRange($start_date, $end_date);
         } elseif (isset($_GET['id_stok_opname'])) {
             $c->show($_GET['id_stok_opname']);
         } else {
@@ -159,11 +178,13 @@ elseif ($table === 'kasir') {
     require_once __DIR__ . "/../controllers/KasirController.php";
     $c = new KasirController();
     if ($method === 'GET') {
-        if (isset($_GET['tgl_awal']) && isset($_GET['tgl_akhir'])) {
-            // Jika ada, panggil fungsi untuk menampilkan laporan berdasarkan rentang tanggal
-            $tglAwal = $_GET['tgl_awal'];
-            $tglAkhir = $_GET['tgl_akhir'];
-            $c->showByDateRange($tglAwal, $tglAkhir);  // Fungsi untuk menampilkan data berdasarkan tanggal
+        if (isset($_GET['start_date'], $_GET['end_date'])) {
+
+            $start_date = $_GET['start_date'];
+            $end_date   = $_GET['end_date'];
+
+
+            $c->showByDateRange($start_date, $end_date);
         }
         if (!empty($_GET['id_kasir'])) {
             $c->show($_GET['id_kasir']);

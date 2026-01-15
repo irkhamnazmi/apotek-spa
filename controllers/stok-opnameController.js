@@ -224,7 +224,7 @@ loadModal(
     }
 
     window.open(
-        `${host}/reports/r_stokopname.html?tgl_awal=${tglAwal}&tgl_akhir=${tglAkhir}`,
+        `${host}/reports/r_stokopname.html?tgl_awal=${tglAwal}&tgl_akhir=${tglAkhir}&nocache=${Math.random()}`,
         "printPopup",
         "width=800,height=600"
     );
